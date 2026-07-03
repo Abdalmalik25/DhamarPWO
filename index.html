@@ -97,10 +97,22 @@
     />
     <!-- Load Google Fonts with display=swap to avoid render-blocking -->
     <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
+    />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap"
+    />
+    <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap"
-      media="print"
-      onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap"
     />
     <noscript>
       <link
@@ -163,7 +175,7 @@
   </head>
   <body>
     <div id="root">
-      <!-- مؤشر التحميل الأولي - يختفي فور تحميل React -->
+      <!-- مؤشر التحميل الأولي - يختفي تلقائياً بعد تحميل React -->
       <div
         id="initial-loader"
         style="
@@ -177,6 +189,9 @@
           background: linear-gradient(135deg, #0a1628, #0f1f38, #132744);
           font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
           direction: rtl;
+          transition: opacity 0.6s ease, visibility 0.6s ease;
+          opacity: 1;
+          visibility: visible;
         "
       >
         <style>

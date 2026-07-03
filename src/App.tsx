@@ -136,7 +136,7 @@ function AppContent() {
 
   // إخفاء شاشة التحميل بعد تجهيز التطبيق
   useEffect(() => {
-    const t = setTimeout(() => setReady(true), 2000);
+    const t = setTimeout(() => setReady(true), 1500);
     return () => clearTimeout(t);
   }, []);
 
