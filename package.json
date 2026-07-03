@@ -2,6 +2,7 @@
   "name": "pwo-dhamar-website",
   "version": "5.0.0",
   "private": true,
+  "packageManager": "pnpm@11.9.0",
   "description": "مكتب الأشغال العامة والطرق - محافظة ذمار | البوابة الإلكترونية الرسمية - الإصدار 5.0.0",
   "author": "م. هايل البحري <m.haielalbahri@pwo-dhamar.gov.ye>",
   "license": "MIT",
@@ -96,7 +97,7 @@
     "workbox-strategies": "^7.4.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "20.x"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": "eslint --fix",
