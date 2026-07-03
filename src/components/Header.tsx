@@ -225,11 +225,10 @@ const Header = memo(({ currentPage, onNavigate, theme = 'light', onThemeToggle }
                   size={11}
                   className="text-gold-400 group-hover:scale-110 transition-transform"
                 />
-                <span className="hidden sm:inline font-medium">محافظة ذمار</span>
-                <span className="sm:hidden font-medium">ذمار</span>
+                <span className="font-medium">محافظة ذمار</span>
               </div>
 
-              <div className="h-4 w-px bg-white/20 hidden sm:block" />
+              <div className="h-4 w-px bg-white/20" />
 
               <a
                 href="tel:+967777888198"
@@ -252,7 +251,7 @@ const Header = memo(({ currentPage, onNavigate, theme = 'light', onThemeToggle }
 
               <a
                 href="mailto:info@pwo-dhamar.gov.ye"
-                className="hidden md:flex items-center gap-1.5 hover:text-gold-300 transition-colors text-white/70 font-medium group"
+                className="flex items-center gap-1.5 hover:text-gold-300 transition-colors text-white/70 font-medium group"
               >
                 <Mail
                   size={11}
@@ -269,9 +268,9 @@ const Header = memo(({ currentPage, onNavigate, theme = 'light', onThemeToggle }
                   size={11}
                   className="text-gold-400"
                 />
-                <span className="font-medium hidden xs:inline">الجمهورية اليمنية</span>
-                <span className="text-white/20 hidden xs:inline">|</span>
-                <span className="hidden xs:inline text-white/60 font-medium">وزارة الأشغال</span>
+                <span className="font-medium">الجمهورية اليمنية</span>
+                <span className="text-white/20">|</span>
+                <span className="text-white/60 font-medium">وزارة الأشغال</span>
               </div>
 
               <div className="h-4 w-px bg-white/20" />
@@ -286,7 +285,7 @@ const Header = memo(({ currentPage, onNavigate, theme = 'light', onThemeToggle }
 
               <div className="h-4 w-px bg-white/20 hidden sm:block" />
 
-              <div className="hidden sm:flex items-center gap-1.5 text-white/40">
+              <div className="flex items-center gap-1.5 text-white/40">
                 <span className="text-[10px]">أوقات العمل:</span>
                 <span className="text-white/60 font-medium text-[10px]">السبت - الأربعاء</span>
                 <span className="text-white/40 text-[10px]">|</span>
@@ -315,12 +314,13 @@ const Header = memo(({ currentPage, onNavigate, theme = 'light', onThemeToggle }
                   <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-transparent rounded-2xl" />
                   <OptimizedImage
                     src="/icons/Emblem_office.svg"
+                    alt="شعار مكتب الأشغال العامة والطرق"
                     fallback="/icons/Emblem_office.svg"
                     className="w-full h-full object-contain p-2.5 relative z-10 drop-shadow-2xl"
                     priority
                   />
                 </div>
-              <div className="text-right hidden sm:block">
+              <div className="text-right">
                 <div className="text-gov-900 font-black text-sm lg:text-base leading-tight tracking-tight">
                   مكتب الأشغال العامة والطرق
                 </div>

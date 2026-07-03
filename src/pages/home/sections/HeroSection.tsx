@@ -581,7 +581,7 @@ const HeroSection = memo(function HeroSection({ onNavigate }: HeroSectionProps) 
                 </div>
               </div>
               <div className="flex items-center gap-3 lg:gap-4 text-white/55 text-xs">
-                <span className="hidden md:flex items-center gap-1">
+                <span className="flex items-center gap-1">
                   <Clock
                     size={11}
                     className="text-gold-400/70"
@@ -601,10 +601,10 @@ const HeroSection = memo(function HeroSection({ onNavigate }: HeroSectionProps) 
                   />
                   <span className="font-mono tracking-wide">{OFFICE_DATA.phone}</span>
                 </a>
-                <span className="hidden lg:inline text-white/20">|</span>
+                <span className="text-white/20">|</span>
                 <a
                   href={`mailto:${OFFICE_DATA.email}`}
-                  className="hidden lg:flex items-center gap-1 hover:text-gold-300 transition-colors duration-300"
+                  className="flex items-center gap-1 hover:text-gold-300 transition-colors duration-300"
                 >
                   <Mail
                     size={11}
@@ -800,7 +800,7 @@ const HeroSection = memo(function HeroSection({ onNavigate }: HeroSectionProps) 
           </div>
 
           {/* العمود الأيسر - صورة المبنى مع overlay */}
-          <div className="hidden lg:flex items-center justify-center relative">
+          <div className="flex items-center justify-center relative">
             <div className="relative w-full max-w-lg xl:max-w-xl">
               {/* glow خلفية */}
               <div className="absolute -inset-6 bg-gradient-to-br from-gold-500/15 via-blue-500/10 to-gold-600/15 rounded-full blur-3xl opacity-70 animate-pulse" />
@@ -843,7 +843,7 @@ const HeroSection = memo(function HeroSection({ onNavigate }: HeroSectionProps) 
         </div>
 
         {/* خدمات سريعة */}
-        <div className="hidden lg:block mt-10 xl:mt-12">
+        <div className="mt-10 xl:mt-12">
           <ScrollReveal delay={550}>
             <div className="grid grid-cols-4 gap-4">
               {QUICK_SERVICES.map((service, index) => (
