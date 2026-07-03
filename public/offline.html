@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>غير متصل - مكتب الأشغال العامة والطرق</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Cairo', 'Tajawal', system-ui, -apple-system, sans-serif;
+      background: #0a192f;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      direction: rtl;
+    }
+    .container { padding: 2rem; max-width: 420px; }
+    .icon {
+      width: 80px; height: 80px;
+      background: rgba(212, 175, 55, 0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+      border: 2px solid rgba(212, 175, 55, 0.3);
+    }
+    .icon svg { width: 40px; height: 40px; fill: #d4af37; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.75rem; color: #d4af37; }
+    p { color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: #d4af37; color: #000; border: none;
+      padding: 0.85rem 1.75rem; border-radius: 12px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn:hover { background: #fbbf24; transform: scale(1.05); }
+    .btn:active { transform: scale(0.95); }
+    .retry { margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">
+      <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+    </div>
+    <h1>لا يوجد اتصال بالإنترنت</h1>
+    <p>يبدو أنك غير متصل بالشبكة حالياً. بعض الخدمات قد لا تكون متاحة، لكننا سنستعيد الخدمة فور عودة الاتصال.</p>
+    <button class="btn" onclick="window.location.reload()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      إعادة المحاولة
+    </button>
+    <div class="retry">سيتم إعادة الاتصال تلقائياً عند توفر الشبكة</div>
+  </div>
+  <script>
+    window.addEventListener('online', () => { window.location.reload(); });
+  </script>
+</body>
+</html>

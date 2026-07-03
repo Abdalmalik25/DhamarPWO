@@ -1,0 +1,15 @@
+export default {
+  semi: true,
+  trailingComma: 'all',
+  singleQuote: true,
+  tabWidth: 2,
+  useTabs: false,
+  printWidth: 100,
+  endOfLine: 'lf',
+  arrowParens: 'always',
+  bracketSameLine: false,
+  bracketSpacing: true,
+  jsxSingleQuote: false,
+  quoteProps: 'consistent',
+  singleAttributePerLine: true,
+};

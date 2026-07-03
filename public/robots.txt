@@ -1,0 +1,39 @@
+# Robots.txt - مكتب الأشغال العامة والطرق - محافظة ذمار
+# الإصدار 2.0 - محسّن للإنتاج
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /private/
+Disallow: /admin
+Disallow: /login
+Disallow: /dashboard
+
+# السماح بالزحف للمحتوى العام
+Allow: /public/
+Allow: /docs/
+
+# تحديد معدل الزحف
+Crawl-delay: 1
+Request-rate: 10/1m
+
+# خرائط الموقع
+Sitemap: https://pwo-dhamar.gov.ye/sitemap.xml
+Sitemap: https://pwo-dhamar.gov.ye/sitemap-ar.xml
+
+# منع الزحف للملفات الحساسة
+Disallow: /*.json$
+Disallow: /*.env
+Disallow: /node_modules/
+Disallow: /dist/
+
+# تحسين SEO للمحتوى الرئيسي
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# تحسين التتبع للمحركات
+User-agent: *
+Crawl-delay: 0.5

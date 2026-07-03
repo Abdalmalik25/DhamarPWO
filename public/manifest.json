@@ -1,0 +1,84 @@
+{
+  "name": "مكتب الأشغال العامة والطرق - محافظة ذمار",
+  "short_name": "مكتب الأشغال - ذمار",
+  "description": "المنصة الرسمية للخدمات الهندسية والإدارية - تراخيص البناء، اعتماد المخططات، المعاينات الميدانية، النماذج الرسمية المعتمدة",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a192f",
+  "theme_color": "#1e3a8a",
+  "orientation": "any",
+  "dir": "rtl",
+  "lang": "ar",
+  "scope": "/",
+  "display_override": ["standalone", "browser"],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "128x128",
+      "type": "image/x-icon",
+      "purpose": "any"
+    },
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "النماذج الرسمية",
+      "short_name": "النماذج",
+      "description": "طباعة النماذج الرسمية المعتمدة",
+      "url": "/forms"
+    },
+    {
+      "name": "تتبع معاملة",
+      "short_name": "التتبع",
+      "description": "تتبع حالة معاملتك الهندسية",
+      "url": "/track"
+    },
+    {
+      "name": "دليل الخدمات",
+      "short_name": "الخدمات",
+      "description": "عرض جميع الخدمات الهندسية والإدارية",
+      "url": "/services"
+    }
+  ],
+  "categories": ["government", "business", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "الشاشة الرئيسية لمكتب الأشغال العامة والطرق"
+    },
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "تصفح الخدمات عبر الجوال"
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "launch_handler": {
+    "client_mode": ["focus-existing", "navigate-existing"]
+  },
+  "handle_links": "preferred",
+  "protocol_handlers": [
+    {
+      "protocol": "web+track",
+      "url": "/track?ref=%s"
+    },
+    {
+      "protocol": "web+service",
+      "url": "/services?ref=%s"
+    }
+  ]
+}
