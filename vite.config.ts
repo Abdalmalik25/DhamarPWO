@@ -98,7 +98,7 @@ export default defineConfig(({ mode }) => {
             'vendor-react': ['react', 'react-dom', 'react/jsx-runtime', 'react-dom/client'],
             'vendor-ui': ['lucide-react', 'react-icons'],
             'vendor-maps': ['leaflet', 'react-leaflet'],
-            'vendor-utils': ['zod', 'react-hot-to-print'],
+            'vendor-utils': ['zod', 'react-to-print'],
           },
           assetFileNames: (assetInfo) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
