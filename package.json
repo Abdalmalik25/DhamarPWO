@@ -27,11 +27,16 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "prepare": "node scripts/copy-docs.mjs",
     "postinstall": "node scripts/copy-docs.mjs",
+    "test": "vitest",
     "test:perf": "lighthouse http://localhost:8080 --view --output=html --output-path=./lighthouse-report.html",
     "test:a11y": "eslint . --ext .ts,.tsx --rule 'jsx-a11y/alt-text': error",
+    "test:security": "npm audit --audit-level=high",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
     "analyze": "node scripts/analyze-bundle.mjs",
     "clean": "rimraf dist",
-    "reinstall": "pnpm install && pnpm prepare"
+    "reinstall": "pnpm install && pnpm prepare",
+    "check-all": "pnpm lint && pnpm typecheck && pnpm test && pnpm audit"
   },
   "keywords": [
     "municipality",
@@ -91,9 +96,7 @@
     "workbox-strategies": "^7.4.1"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=18.0.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": "eslint --fix",

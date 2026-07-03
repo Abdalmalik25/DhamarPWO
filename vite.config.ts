@@ -31,7 +31,12 @@ export default defineConfig(({ mode }) => {
       // ضغط Gzip للملفات
       compression({
         algorithms: ['gzip'],
-        filename: '[path][base].gz',
+        threshold: 1024,
+      }),
+      // ضغط Brotli للملفات (أفضل من Gzip)
+      compression({
+        algorithms: ['brotliCompress'],
+        threshold: 1024,
       }),
     ],
 
@@ -81,15 +86,19 @@ export default defineConfig(({ mode }) => {
 
     build: {
       outDir: 'dist',
-      sourcemap: !isProduction,
+      sourcemap: false, // تعطيل في الإنتاج للأمان
       target: 'es2020',
       cssCodeSplit: true,
-      minify: 'esbuild',
-      chunkSizeWarningLimit: 1200,
+      minify: 'terser', // تصغير أفضل
+      chunkSizeWarningLimit: 500, // KB - تحذير إذا تجاوز 500KB
+      reportCompressedSize: true,
       rollupOptions: {
         output: {
-          manualChunks: (id: string) => {
-            if (id.includes('node_modules')) return 'vendor';
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react/jsx-runtime', 'react-dom/client'],
+            'vendor-ui': ['lucide-react', 'react-icons'],
+            'vendor-maps': ['leaflet', 'react-leaflet'],
+            'vendor-utils': ['zod', 'react-hot-to-print'],
           },
           assetFileNames: (assetInfo) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,8 +112,7 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
-      reportCompressedSize: false,
-      assetsInlineLimit: 4096,
+      assetsInlineLimit: 2048, // تقليل الملفات المضمنة
       copyPublicDir: true,
     },
 
