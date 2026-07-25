@@ -1,8 +1,10 @@
 // ============================================================
 // SplashScreen - شاشة التحميل الأولية عند فتح التطبيق
+// مستوحاة من الشعار الحكومي (الطرق، البنية التحتية، المباني)
 // ============================================================
 
 import { memo, useEffect, useState, useCallback, useRef } from 'react';
+import GovernmentLogo from './GovernmentLogo';
 
 interface SplashScreenProps {
   minimumDuration?: number;
@@ -120,50 +122,13 @@ const SplashScreen = memo(function SplashScreen({
         ))}
       </div>
 
-      {/* Main logo container with glow effect */}
-      <div className="relative mb-10">
-        {/* Outer rotating ring */}
-        <div className="absolute -inset-8 rounded-full border-2 border-gold-500/20 animate-spin-slow" />
-        <div className="absolute -inset-12 rounded-full border border-gold-500/10 animate-spin-slower" />
-
-        {/* Glow effect */}
-        <div className="absolute -inset-4 bg-gradient-to-br from-gold-500/20 to-transparent rounded-full blur-2xl animate-pulse" />
-
-        {/* Logo card */}
-        <div className="relative w-32 h-32 bg-gradient-to-br from-white/10 to-white/5 rounded-3xl flex items-center justify-center border border-white/30 shadow-2xl backdrop-blur-sm">
-          <div className="relative">
-            {/* Inner shimmer */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent animate-shimmer" />
-
-            {/* Logo SVG */}
-            <svg
-              className="w-16 h-16 text-gold-400"
-              viewBox="0 0 100 100"
-              fill="none"
-            >
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                stroke="currentColor"
-                strokeWidth="2"
-                opacity="0.3"
-              />
-              <path
-                d="M50 10 L61 39 H92 L67 58 L76 88 L50 70 L24 88 L33 58 L8 39 H39 Z"
-                fill="currentColor"
-                opacity="0.8"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="20"
-                fill="currentColor"
-                opacity="0.2"
-              />
-            </svg>
-          </div>
-        </div>
+      {/* Main logo container with glow effect - باستخدام GovernmentLogo الموحد */}
+      <div className="relative mb-10 z-50">
+        <GovernmentLogo
+          size="xl"
+          variant="splash"
+          animated={true}
+        />
 
         {/* Floating badge */}
         <div className="absolute -top-2 -right-2 bg-gradient-to-br from-gold-500 to-gold-600 rounded-full p-2 shadow-xl animate-bounce">

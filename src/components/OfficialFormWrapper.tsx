@@ -748,15 +748,16 @@ export const OfficialFormWrapper = forwardRef<OfficialFormWrapperRef, OfficialFo
     const pageDimensions = pageSizeMap[pageSize] || pageSizeMap.A4;
 
     const watermarkConfig = useMemo(
-      () => ({
-        text: watermarkText || 'نسخة رسمية',
-        opacity: watermarkSettings.opacity ?? 0.04,
-        angle: watermarkSettings.angle ?? -25,
-        fontSize: watermarkSettings.fontSize ?? 48,
-        color: watermarkSettings.color || '#000000',
-        repeat: watermarkSettings.repeat ?? false,
-        spacing: watermarkSettings.spacing ?? 200,
-      } as const),
+      () =>
+        ({
+          text: watermarkText || 'نسخة رسمية',
+          opacity: watermarkSettings.opacity ?? 0.04,
+          angle: watermarkSettings.angle ?? -25,
+          fontSize: watermarkSettings.fontSize ?? 48,
+          color: watermarkSettings.color || '#000000',
+          repeat: watermarkSettings.repeat ?? false,
+          spacing: watermarkSettings.spacing ?? 200,
+        }) as const,
       [watermarkText, watermarkSettings],
     );
 

@@ -18,6 +18,12 @@ import {
   Star,
   Sparkles,
   Download,
+  Layers,
+  MapPin,
+  Construction,
+  Scale,
+  FolderOpen,
+  Clock,
 } from 'lucide-react';
 
 // ============================================================

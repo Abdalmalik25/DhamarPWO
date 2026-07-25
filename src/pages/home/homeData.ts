@@ -53,7 +53,19 @@ export interface Announcement {
   description: string;
   date: string;
   priority: 'high' | 'normal' | 'low';
-  category?: string;
+  category?:
+    | 'إدارية'
+    | 'هندسية'
+    | 'طرق'
+    | 'بناء'
+    | 'عامة'
+    | 'رقمي'
+    | 'مشاريع'
+    | 'توعوي'
+    | 'دليل'
+    | 'خدمات'
+    | 'تدريب'
+    | 'مبادرة';
   isPinned?: boolean;
   expiresAt?: string;
   views?: number;
@@ -63,7 +75,35 @@ export interface FAQ {
   id: string;
   question: string;
   answer: string;
-  category?: 'general' | 'procedural' | 'legal';
+  category?:
+    'planning' | 'permitting' | 'execution' | 'inspection' | 'handover' | 'legal' | 'general';
+  /** نصيحة هندسية أو تنبيه قانوني إضافي */
+  tip?: string;
+  /** أحكام قانونية مرتبطة */
+  regulation?: {
+    law: string;
+    article: string;
+    summary: string;
+  };
+  /** حالات عملية مشابهة */
+  similarCases?: string[];
+  /** الصفحة المرتبطة للانتقال إليها */
+  relatedPage?: Page;
+  /** الكلمات المفتاحية للبحث الدلالي */
+  tags?: string[];
+  /** هل هذا السؤال يعتبر "سؤالاً عميقاً"؟ */
+  isAdvanced?: boolean;
+  /** إجراءات العمل خطوة بخطوة */
+  workflow?: string[];
+  /** المراجع والوثائق المرتبطة */
+  resources?: {
+    title: string;
+    url: string;
+    type: 'pdf' | 'doc' | 'link';
+  }[];
+  /** الوقت التقديري للإجراء */
+  estimatedTime?: string;
+  /** هل هذا السؤال شائع؟ */
   isPopular?: boolean;
 }
 
@@ -74,12 +114,7 @@ export interface Guideline {
   icon: React.ElementType;
   color: string;
   category?:
-    | 'residential'
-    | 'commercial'
-    | 'industrial'
-    | 'agricultural'
-    | 'educational'
-    | 'health';
+    'residential' | 'commercial' | 'industrial' | 'agricultural' | 'educational' | 'health';
   isPopular?: boolean;
   isNew?: boolean;
   estimatedTime?: string;
@@ -329,7 +364,7 @@ export const FALLBACK_FAQS: FAQ[] = [
     question: 'ما هي المستندات المطلوبة للحصول على ترخيص بناء جديد؟',
     answer:
       'تشترط اللوائح النظامية تقديم المستندات التالية لإصدار ترخيص بناء جديد: (1) صورة من البطاقة الشخصية سارية المفعول، (2) سند ملكية الأرض أو ما يثبت حق الانتفاع، (3) المخططات الهندسية المعتمدة من مكتب استشاري مرخص، (4) تقرير التربة للمشاريع التي تزيد عن 4 أدوار، (5) نموذج طلب الخدمة ن-1 مكتمل البيانات. ينصح بالاستعانة بمكتب استشاري معتمد لإعداد المخططات قبل التقديم.',
-    category: 'general',
+    category: 'permitting',
     isPopular: true,
   },
   {
@@ -337,7 +372,7 @@ export const FALLBACK_FAQS: FAQ[] = [
     question: 'كم تستغرق مدة إصدار ترخيص البناء؟',
     answer:
       'تتراوح مدة إصدار ترخيص البناء بين 5 إلى 15 يوم عمل من تاريخ تقديم الطلب مستوفياً جميع المستندات المطلوبة، وتختلف المدة حسب نوع الترخيص واكتمال المستندات والحاجة للمعاينة الميدانية.',
-    category: 'general',
+    category: 'permitting',
     isPopular: true,
   },
   {
@@ -345,7 +380,7 @@ export const FALLBACK_FAQS: FAQ[] = [
     question: 'كيف يمكن تتبع المعاملة إلكترونياً؟',
     answer:
       'يتيح الموقع الرسمي خدمة تتبع المعاملات إلكترونياً عبر إدخال رقم التتبع المقدم عند تقديم المعاملة، وتظهر الحالة خطوة بخطوة: قيد المراجعة، قيد المعاينة، قيد الاعتماد، تم الإصدار.',
-    category: 'procedural',
+    category: 'general',
     isPopular: true,
   },
   {
@@ -357,10 +392,10 @@ export const FALLBACK_FAQS: FAQ[] = [
   },
   {
     id: '5',
-    question: 'كيف يتم الإبلاغ عن مخالفات البناء؟',
+    question: 'كيف يمكن الإبلاغ عن مخالفات البناء؟',
     answer:
       'يمكن الإبلاغ عن مخالفات البناء عبر تعبئة النموذج ن-6 في مركز خدمة الجمهور، أو الاتصال على الرقم الموحد 777-888-198، مع تقديم وصف دقيق للمخالفة وموقعها.',
-    category: 'procedural',
+    category: 'general',
   },
   {
     id: '6',
@@ -388,7 +423,7 @@ export const FALLBACK_FAQS: FAQ[] = [
     question: 'كيف يمكن الحصول على البطاقة الصحية للمنشآت؟',
     answer:
       'يتم التقدم بطلب البطاقة الصحية عبر النموذج ن-7 بعد الحصول على ترخيص تشغيل المنشأة، مرفقاً بالشهادات الصحية للعاملين وتقرير صحي معتمد، وتخضع المنشأة للمعاينة الميدانية.',
-    category: 'procedural',
+    category: 'permitting',
   },
   {
     id: '10',
@@ -653,7 +688,7 @@ export const FALLBACK_AWARENESS: AwarenessContent[] = [
     ],
     detailedInfo: {
       standards: [
-        'الالتزام بالكود اليمني للبناء和安全',
+        'الالتزام بالكود اليمني للبناء',
         'تطبيق معايير OSHA للسلامة المهنية',
         'تركيب شبكات الحماية للمناطق المرتفعة',
         'توفير معدات الوقاية الشخصية',

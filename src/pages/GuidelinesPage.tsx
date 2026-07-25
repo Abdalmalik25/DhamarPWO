@@ -1,1031 +1,501 @@
 // ============================================================
-// GuidelinesPage.tsx - النظام المتكامل لإدارة المعرفة المؤسسية
+// GuidelinesPage.tsx - الدليل الإرشادي الرسمي للهندسة والبناء
+// مكتب الأشغال العامة والطرق - محافظة ذمار
 // ============================================================
-import { useState, useEffect, useRef, useCallback, useMemo, memo, type ReactNode } from 'react';
-import type { LucideIcon } from 'lucide-react';
+
+import { memo, useMemo, useState } from 'react';
 import {
-  FileText,
   BookOpen,
+  Home,
+  Store,
+  Factory,
+  Trees,
+  School,
+  Heart,
   Download,
-  Eye,
   Search,
-  ArrowLeft,
+  Filter,
+  CheckCircle,
+  AlertCircle,
   Phone,
-  Shield,
+  Eye,
+  Star,
   Layers,
-  Calendar,
-  MessageCircle,
-  Info,
-  Bookmark,
-  FolderOpen,
-  Grid3X3,
-  List,
-  X,
-  FileCheck,
-  Database,
-  Clock,
-  CheckCircle2,
-  HardHat,
-  MapPin,
-  User,
-  FileOutput,
-  Camera,
-  Building2,
-  Gavel,
-  PenTool,
-  TrendingUp,
-  LayoutDashboard,
 } from 'lucide-react';
-import { useNavigation } from '../components/NavigationHistory';
+import type { Page } from '../types/page';
 
 // ============================================================
-// 1. نظام إدارة المعرفة المؤسسية (نموذج البيانات المتقدم)
+// 1. تعريفات الأنواع
 // ============================================================
-type DocumentCategory =
-  | 'دليل شامل'
-  | 'فصل تقني'
-  | 'نموذج رسمي'
-  | 'صورة هندسية'
-  | 'مرجع قانوني'
-  | 'تعميم إداري'
-  | 'عقد نموذجي'
-  | 'تقرير فني'
-  | 'خريطة تنظيمية';
 
-type DocumentType = 'pdf' | 'image' | 'doc' | 'xlsx' | 'zip' | 'folder';
-
-type GuidelineItem = {
+interface GuidelineCategory {
   id: string;
   title: string;
   description: string;
-  category: DocumentCategory;
-  subCategory?: string; // للتصنيف الداخلي (مثلاً: إنشائي، معماري، طرق)
-  type: DocumentType;
-  url: string;
-  pages?: number;
-  size?: string;
-  updatedAt?: string;
-  featured?: boolean;
-  icon?: LucideIcon;
+  icon: React.ElementType;
+  color: string;
+  count?: number;
+}
 
-  // حقول حقيقية لتشغيل مكتب الأشغال
-  department: string; // القسم المختص
-  responsibleEngineer?: string; // المهندس المشرف
-  projectCode?: string; // كود المشروع (إن وجد)
-  classification: 'عام' | 'داخلي' | 'سري'; // تصنيف الوثيقة
-  keywords: string[];
-  version: string;
-  status: 'نشط' | 'محدث' | 'منتهي';
-  views: number;
-  downloads: number;
-  lastDownloadAt?: string;
-};
+interface Guideline {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  estimatedTime?: string;
+  views?: number;
+  downloads?: number;
+  isActive?: boolean;
+  isPopular?: boolean;
+  isNew?: boolean;
+  requirements?: string[];
+  steps?: string[];
+  fees?: { min: number; max: number; currency: string };
+  relatedForms?: string[];
+}
 
 // ============================================================
-// 2. قاعدة بيانات الوثائق المؤسسية الحقيقية (Real Data)
+// 2. البيانات الرسمية
 // ============================================================
-const guidelinesData: GuidelineItem[] = [
-  // ========== القسم 1: الأدلة الشاملة ==========
+
+const GUIDELINE_CATEGORIES: GuidelineCategory[] = [
   {
-    id: 'guide-full',
-    title: 'الدليل الإرشادي للخدمات (خاص بالمستفيد)',
-    description:
-      'الدليل الرسمي للمستفيدين يشرح جميع الخدمات الهندسية والإدارية يقدمها المكتب للمواطنين، مع بيان الشروط، الوثائق، الرسوم، والمدة الزمنية لكل خدمة.',
-    category: 'دليل شامل',
-    type: 'pdf',
-    url: '/docs/الدليل الإرشادي للخدمات - خاص بالمستفيد.pdf',
-    pages: 120,
-    size: '4.8 MB',
-    updatedAt: '2026-06-20',
-    featured: true,
-    icon: BookOpen,
-    department: 'الإدارة العامة',
-    responsibleEngineer: 'م. هايل البحري',
-    classification: 'عام',
-    keywords: ['دليل', 'إرشادي', 'خدمات', 'إجراءات', 'رسوم', 'مدة'],
-    version: 'v3.2',
-    status: 'نشط',
-    views: 2050,
-    downloads: 456,
-    lastDownloadAt: '2026-06-28',
+    id: 'residential',
+    title: 'المنشآت السكنية',
+    description: 'إرشادات تراخيص البناء للمنازل السكنية والارتدادات',
+    icon: Home,
+    color: 'from-blue-500 to-blue-600',
+    count: 12,
   },
   {
-    id: 'beneficiary-assessment',
-    title: 'استبيان رضا المستفيدين',
-    description: 'نموذج تقييم لقياس مدى رضا المستفيدين عن الخدمات الهندسية المقدمة من المكتب.',
-    category: 'دليل شامل',
-    type: 'pdf',
-    url: '/docs/Beneficiary Satisfaction Assessment Form.pdf',
-    pages: 45,
-    size: '2.1 MB',
-    updatedAt: '2026-05-10',
-    featured: false,
-    icon: Bookmark,
-    department: 'إدارة الأرشيف',
-    classification: 'داخلي',
-    keywords: ['أرشفة', 'توثيق', 'تراخيص', 'سجلات'],
-    version: 'v1.1',
-    status: 'نشط',
+    id: 'commercial',
+    title: 'المنشآت التجارية',
+    description: 'اشتراطات تراخيص المحلات التجارية والأسواق',
+    icon: Store,
+    color: 'from-amber-500 to-amber-600',
+    count: 8,
+  },
+  {
+    id: 'industrial',
+    title: 'المنشآت الصناعية',
+    description: 'معايير تراخيص المصانع والمنشآت الصناعية',
+    icon: Factory,
+    color: 'from-purple-500 to-purple-600',
+    count: 6,
+  },
+  {
+    id: 'agricultural',
+    title: 'المنشآت الزراعية',
+    description: 'إرشادات تراخيص المنشآت الزراعية والصوبات',
+    icon: Trees,
+    color: 'from-green-500 to-green-600',
+    count: 4,
+  },
+  {
+    id: 'educational',
+    title: 'المنشآت التعليمية',
+    description: 'اشتراطات تراخيص المدارس والجامعات',
+    icon: School,
+    color: 'from-teal-500 to-teal-600',
+    count: 5,
+  },
+  {
+    id: 'health',
+    title: 'المنشآت الصحية',
+    description: 'معايير تراخيص المستشفيات والمراكز الصحية',
+    icon: Heart,
+    color: 'from-rose-500 to-rose-600',
+    count: 3,
+  },
+];
+
+const GUIDELINES_DATA: Guideline[] = [
+  {
+    id: '1',
+    title: 'إرشادات الترخيص السكني - الطابق الأرضي',
+    description:
+      'إرشادات مُفصّلة للحصول على ترخيص بناء للمنازل السكنية ذات الطابق الأرضي، وشاملة جميع الاشتراطات الإنشائية والمساحية.',
+    category: 'residential',
+    estimatedTime: '3 أيام عمل',
     views: 450,
-    downloads: 110,
-  },
-
-  // ========== القسم 2: الفصول التقنية والتخصصية ==========
-  {
-    id: 'chapter3-forms',
-    title: 'الفصل الثالث: النماذج الرسمية وضوابط التعبئة',
-    description:
-      'يتضمن هذا الفصل جميع النماذج التشغيلية المعتمدة (من ن-1 إلى ن-8) مع شرح مفصل لضوابط التعبئة والإجراءات المترتبة عليها.',
-    category: 'فصل تقني',
-    type: 'pdf',
-    url: '/docs/الفصل الثالث النماذج.pdf',
-    pages: 180,
-    size: '6.5 MB',
-    updatedAt: '2026-06-15',
-    featured: true,
-    icon: FileText,
-    department: 'إدارة التراخيص',
-    responsibleEngineer: 'م. يحيى القاضي',
-    classification: 'عام',
-    keywords: ['فصل', 'نموذج', 'ضوابط', 'تعبئة', 'ن-1', 'ن-8'],
-    version: 'v2.0',
-    status: 'نشط',
-    views: 1200,
-    downloads: 340,
-    lastDownloadAt: '2026-06-25',
-  },
-  {
-    id: 'chapter2-summary',
-    title: 'الفصل الثاني: الهيكل التنظيمي والإجراءات التنفيذية',
-    description:
-      'يشمل الهيكل التنظيمي للمكتب، توزيع الصلاحيات، ودليل الإجراءات التنفيذية للمعاملات الهندسية مع ملخص تنفيذي.',
-    category: 'فصل تقني',
-    type: 'pdf',
-    url: '/docs/الفصل الثاني مع الملخص.pdf',
-    pages: 95,
-    size: '4.2 MB',
-    updatedAt: '2026-06-10',
-    featured: false,
-    icon: Shield,
-    department: 'إدارة التخطيط',
-    classification: 'داخلي',
-    keywords: ['هيكل', 'تنظيمي', 'إجراءات', 'صلاحيات'],
-    version: 'v1.5',
-    status: 'محدث',
-    views: 540,
-    downloads: 102,
-  },
-
-  // ========== القسم 3: الصور الهندسية والخرائط ==========
-  {
-    id: 'street-view',
-    title: 'صورة جوية: شارع الثلاثين (ذمار)',
-    description:
-      'صورة جوية عالية الدقة للشارع الرئيسي بمدينة ذمار، توضح التخطيط العمراني الحالي، شبكة الطرق، ومواقع الخدمات.',
-    category: 'صورة هندسية',
-    type: 'image',
-    url: '/docs/imagemainstreet.png',
-    featured: true,
-    icon: Camera,
-    department: 'إدارة الطرق',
-    classification: 'عام',
-    keywords: ['شارع', 'الثلاثين', 'ذمار', 'تخطيط', 'جوية'],
-    version: 'v1.0',
-    status: 'نشط',
-    views: 980,
-    downloads: 240,
-  },
-  {
-    id: 'parking-map',
-    title: 'خريطة تنظيم مواقف السيارات',
-    description:
-      'خريطة تنظيمية توضح توزيع مواقف السيارات في الأحياء السكنية والتجارية، مع بيان مناطق الحظر والمسارات المحددة.',
-    category: 'صورة هندسية',
-    type: 'image',
-    url: '/docs/تنظيم_المواقف.png',
-    featured: false,
-    icon: MapPin,
-    department: 'إدارة الطرق',
-    classification: 'عام',
-    keywords: ['خريطة', 'مواقف', 'تنظيم', 'سكني', 'تجاري'],
-    version: 'v2.0',
-    status: 'نشط',
-    views: 480,
-    downloads: 110,
-  },
-  {
-    id: 'engineering-works-photo',
-    title: 'أعمال الحفر والبنية التحتية (ذمار)',
-    description:
-      'توثيق عمليات الحفر ومد أنابيب المياه والصرف الصحي في شارع الثلاثين، مع بيان إجراءات السلامة والأمان.',
-    category: 'صورة هندسية',
-    type: 'image',
-    url: '/docs/parkingorgn1.png',
-    featured: false,
-    icon: HardHat,
-    department: 'إدارة الطرق',
-    responsibleEngineer: 'م. عبدالله القرشي',
-    classification: 'داخلي',
-    keywords: ['حفر', 'بنية', 'تحتية', 'مياه', 'صرف'],
-    version: 'v1.0',
-    status: 'منتهي',
-    views: 350,
-    downloads: 85,
-  },
-
-  // ========== القسم 4: المراجع القانونية ==========
-  {
-    id: 'expert-review',
-    title: 'التقرير الفني: الخبراء والمراجعة',
-    description:
-      'تقرير فني شامل لمراجعة معايير الجودة والسلامة الهندسية في المشاريع المنفذة في المحافظة.',
-    category: 'تقرير فني',
-    type: 'pdf',
-    url: '/docs/EXPERT_REVIEW_10_10.md',
-    pages: 110,
-    size: '8.2 MB',
-    updatedAt: '2026-05-20',
-    featured: false,
-    icon: FileCheck,
-    department: 'الإدارة الفنية',
-    classification: 'عام',
-    keywords: ['معايير', 'فنية', 'مواصفات', 'هندسية', 'بناء'],
-    version: 'v4.0',
-    status: 'نشط',
-    views: 1120,
-    downloads: 310,
-    lastDownloadAt: '2026-06-22',
-  },
-  {
-    id: 'updates-analysis',
-    title: 'تقرير التحليل الشامل للتحديثات',
-    description: 'تحليل شامل للتحديثات والتحسينات المنفذة في البوابة الإلكترونية والخدمات الرقمية.',
-    category: 'تقرير فني',
-    type: 'pdf',
-    url: '/docs/UPDATES_ANALYSIS.md',
-    pages: 200,
-    size: '7.8 MB',
-    updatedAt: '2026-04-15',
-    featured: true,
-    icon: Gavel,
-    department: 'الشؤون القانونية',
-    classification: 'عام',
-    keywords: ['قوانين', 'تشريعات', 'يمنية', 'بناء', 'طرق'],
-    version: 'v2.2',
-    status: 'محدث',
-    views: 1850,
-    downloads: 455,
-    lastDownloadAt: '2026-06-20',
-  },
-
-  // ========== القسم 5: التعاميم الإدارية ==========
-  {
-    id: 'achievement-report',
-    title: 'تقرير الإنجاز',
-    description: 'تقرير دوري يوثق الإنجازات والمشاريع المنفذة في المحافظة خلال الفترة المحددة.',
-    category: 'تقرير فني',
-    type: 'pdf',
-    url: '/docs/تقرير_الانجاز.md',
-    pages: 8,
-    size: '0.5 MB',
-    updatedAt: '2026-06-01',
-    featured: false,
-    icon: Building2,
-    department: 'الإدارة العامة',
-    classification: 'عام',
-    keywords: ['تعميم', 'أوقات', 'دوام', 'مراجعين'],
-    version: 'v1.0',
-    status: 'نشط',
-    views: 680,
-    downloads: 220,
-  },
-  {
-    id: 'comprehensive-analysis',
-    title: 'التقرير التحليلي الشامل',
-    description: 'تحليل شامل لأداء الخدمات والعمليات في المكتب مع توصيات للتحسين المستمر.',
-    category: 'تقرير فني',
-    type: 'pdf',
-    url: '/docs/تقرير_التحليل_الشامل.md',
-    pages: 12,
-    size: '0.8 MB',
-    updatedAt: '2026-05-25',
-    featured: false,
-    icon: FileOutput,
-    department: 'الإدارة العامة',
-    classification: 'داخلي',
-    keywords: ['تعميم', 'استلام', 'تسليم', 'إلكتروني'],
-    version: 'v1.2',
-    status: 'نشط',
-    views: 450,
-    downloads: 130,
-  },
-
-  // ========== القسم 6: العقود النموذجية ==========
-  {
-    id: 'governorate-map',
-    title: 'خريطة المحافظة الرئيسية',
-    description: 'خريطة تفصيلية لمحافظة ذمار تُظهر المناطق الإدارية والطرق الرئيسية والحدود.',
-    category: 'خريطة تنظيمية',
-    type: 'image',
-    url: '/docs/ThamarMapMain.png',
-    pages: 25,
-    size: '0.9 MB',
-    updatedAt: '2026-06-10',
-    featured: false,
-    icon: PenTool,
-    department: 'إدارة الطرق',
-    classification: 'داخلي',
-    keywords: ['عقد', 'طرق', 'تنفيذ', 'صيانة', 'ضمانات'],
-    version: 'v3.0',
-    status: 'نشط',
-    views: 420,
-    downloads: 150,
-  },
-  {
-    id: 'parking-org',
-    title: 'تنظيم مواقف السيارات',
-    description: 'خريطة وثيقة لتخطيط وتنظيم مواقف السيارات في المناطق السكنية والتجارية.',
-    category: 'خريطة تنظيمية',
-    type: 'image',
-    url: '/docs/parkingorgn1.png',
-    pages: 18,
-    size: '0.7 MB',
-    updatedAt: '2026-06-05',
-    featured: false,
-    icon: Building2,
-    department: 'إدارة التراخيص',
-    classification: 'داخلي',
-    keywords: ['عقد', 'بناء', 'حكومي', 'جودة', 'سلامة'],
-    version: 'v2.5',
-    status: 'محدث',
-    views: 380,
     downloads: 120,
+    isPopular: true,
+    requirements: ['صورة من الهوية', 'سند ملكية', 'مخططات هندسية', 'إفادة جيران'],
+    steps: [
+      'تقديم الطلب عبر النموذج الإلكتروني (ن-1)',
+      'مراجعة المستندات واستكمال الناقص',
+      'دفع الرسوم المطلوبة',
+      'إرسال للمعاينة الميدانية',
+      'الاعتماد النهائي وإصدار الرخصة',
+    ],
+    fees: { min: 50000, max: 150000, currency: 'ريال' },
+    relatedForms: ['ن-1', 'ن-3'],
+  },
+  {
+    id: '2',
+    title: 'إرشادات الترخيص التجاري - المحلات الصغيرة',
+    description:
+      'إرشادات لتراخيص المحلات التجارية ذات المساحة الصغيرة (أقل من 50 متر مربع) بما يشمل الاشتراطات البلدية والنظافة.',
+    category: 'commercial',
+    estimatedTime: '2 يوم عمل',
+    views: 380,
+    downloads: 95,
+    isPopular: true,
+    requirements: ['صورة هوية', 'عقد إيجار', 'مخطط داخلي', 'شهادة صحية'],
+    steps: [
+      'تقديم طلب ترخيص تجاري (ن-5)',
+      'التحقق من الوثائق',
+      'دفع الرسوم',
+      'المعاينة الصحية',
+      'إصدار الترخيص',
+    ],
+    fees: { min: 30000, max: 100000, currency: 'ريال' },
+    relatedForms: ['ن-5', 'ن-7'],
+  },
+  {
+    id: '3',
+    title: 'إرشادات المختبرات الهندسية',
+    description: 'إرشادات لإجراء الفحوصات الهندسية للمواد الإنشائية وعينات التربة والخرسانة.',
+    category: 'industrial',
+    estimatedTime: '5 أيام عمل',
+    views: 210,
+    downloads: 45,
+    isNew: true,
+    requirements: ['عينة الخرسانة', 'تصريح الحفر', 'نموذج طلب الفحص'],
+    steps: [
+      'إحضار العينة إلى المختبر',
+      'دفع الرسوم المختبرية',
+      'إجراء الفحص الفني',
+      'إصدار تقرير المختبر',
+    ],
+    fees: { min: 15000, max: 45000, currency: 'ريال' },
+    relatedForms: ['ن-4'],
+  },
+  {
+    id: '4',
+    title: 'إرشادات السلامة المهنية',
+    description: 'إرشادات أمان مواقع البناء وفق المعايير العالمية OSHA والكود اليمني للبناء.',
+    category: 'residential',
+    estimatedTime: 'مراجعة دورية',
+    views: 580,
+    downloads: 180,
+    isPopular: true,
+    requirements: ['خطة السلامة', 'معدات الوقاية', 'شهادات العمال'],
+    steps: ['إعداد خطة السلامة', 'توفير معدات الوقاية', 'تدريب العمالة', 'المعاينة الدورية'],
+    relatedForms: ['ن-7'],
   },
 ];
 
 // ============================================================
-// 3. المكونات المساعدة (Advanced Helpers)
+// 3. المكونات الفرعية
 // ============================================================
 
-// نظام الإحصاءات الذكي
-function useLibraryStats(data: GuidelineItem[]) {
-  return useMemo(
-    () => ({
-      totalDocuments: data.length,
-      featuredDocuments: data.filter((d) => d.featured).length,
-      totalDownloads: data.reduce((acc, d) => acc + (d.downloads || 0), 0),
-      totalViews: data.reduce((acc, d) => acc + (d.views || 0), 0),
-      activeDocuments: data.filter((d) => d.status === 'نشط').length,
-      latestUpdate: new Date(
-        Math.max(...data.map((d) => new Date(d.updatedAt || '').getTime())),
-      ).toLocaleDateString('ar-YE'),
-    }),
-    [data],
-  );
-}
-
-type ScrollRevealProps = Readonly<{
-  children: ReactNode;
-  className?: string;
-  delay?: number;
-}>;
-
-// مكون الظهور التدريجي (Optimized ScrollReveal)
-function ScrollReveal({ children, className = '', delay = 0 }: ScrollRevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            setVisible(true);
-            observer.disconnect();
-          }, delay);
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [delay]);
-
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out ${className} ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-// معاينة الملفات
-function useFilePreview() {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const openPreview = (url: string) => {
-    setPreviewUrl(url);
-    setIsOpen(true);
-    document.body.style.overflow = 'hidden';
-  };
-  const closePreview = () => {
-    setIsOpen(false);
-    setPreviewUrl(null);
-    document.body.style.overflow = '';
-  };
-
-  return { previewUrl, isOpen, openPreview, closePreview };
-}
-
-// ============================================================
-// 4. مكون عرض الوثيقة (Enterprise Card Component)
-// ============================================================
 const GuidelineCard = memo(function GuidelineCard({
-  item,
-  onPreview,
-  viewMode,
+  guideline,
+  onNavigate,
+  theme,
 }: {
-  item: GuidelineItem;
-  onPreview: (url: string) => void;
-  viewMode: 'grid' | 'list';
+  guideline: Guideline;
+  onNavigate: (page: Page) => void;
+  theme?: 'light' | 'dark';
 }) {
-  const Icon = item.icon || FileText;
-  // ألوان الفئات المؤسسية
-  const categoryColors: Record<string, { bg: string; text: string; border: string }> = {
-    'دليل شامل': { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200' },
-    'فصل تقني': { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-200' },
-    'نموذج رسمي': { bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-purple-200' },
-    'صورة هندسية': { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-200' },
-    'مرجع قانوني': { bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-200' },
-    'تعميم إداري': { bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-indigo-200' },
-    'عقد نموذجي': { bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-rose-200' },
-    'تقرير فني': { bg: 'bg-teal-50', text: 'text-teal-600', border: 'border-teal-200' },
-    'خريطة تنظيمية': { bg: 'bg-cyan-50', text: 'text-cyan-600', border: 'border-cyan-200' },
-  };
-  const color = categoryColors[item.category] || categoryColors['دليل شامل'];
-
-  // أيقونات نوع الملف
-  const typeIconMap: Record<string, React.ReactNode> = {
-    pdf: (
-      <FileText
-        size={14}
-        className="text-red-500"
-      />
-    ),
-    image: (
-      <Camera
-        size={14}
-        className="text-blue-500"
-      />
-    ),
-    doc: (
-      <FileCheck
-        size={14}
-        className="text-blue-600"
-      />
-    ),
-    xlsx: (
-      <Layers
-        size={14}
-        className="text-emerald-500"
-      />
-    ),
-    zip: (
-      <FolderOpen
-        size={14}
-        className="text-amber-500"
-      />
-    ),
+  const isDark = theme === 'dark';
+  const bgClass = isDark ? 'bg-gray-800/90 border-gray-700/50' : 'bg-white/90 border-gray-200/50';
+  const textClass = isDark ? 'text-gray-100' : 'text-gray-800';
+  const categoryColors: Record<string, string> = {
+    residential: 'from-blue-500 to-blue-700',
+    commercial: 'from-amber-500 to-amber-700',
+    industrial: 'from-purple-500 to-purple-700',
+    agricultural: 'from-green-500 to-green-700',
+    educational: 'from-teal-500 to-teal-700',
+    health: 'from-rose-500 to-rose-700',
   };
 
-  // وضع عرض القائمة (Enterprise List View)
-  if (viewMode === 'list') {
-    return (
-      <div className="bg-white border border-gray-200 rounded-xl hover:shadow-lg transition-all duration-300 p-4 flex flex-col md:flex-row items-start md:items-center gap-4">
-        <div
-          className={`w-12 h-12 rounded-xl flex items-center justify-center ${color.bg} ${color.text} shrink-0`}
-        >
-          <Icon size={20} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${color.bg} ${color.text}`}
-            >
-              {item.category}
-            </span>
-            {item.featured && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gold-100 text-gold-700">
-                ★ مميز
-              </span>
-            )}
-            <span className="text-[10px] text-gray-400 border-r border-gray-200 pr-2 mr-2 flex items-center gap-1">
-              <User size={10} /> {item.department}
-            </span>
-          </div>
-          <h3 className="font-bold text-gray-800 text-base truncate">{item.title}</h3>
-          <p className="text-gray-500 text-sm truncate">{item.description}</p>
-        </div>
-        <div className="flex items-center gap-3 text-[10px] text-gray-400 shrink-0 w-full md:w-auto justify-end">
-          <span className="flex items-center gap-1">
-            <Calendar size={12} /> {item.updatedAt}
-          </span>
-          <span className="flex items-center gap-1">
-            <Database size={12} /> {item.size}
-          </span>
-          <div className="flex gap-1">
-            <button
-              onClick={() => onPreview(item.url)}
-              className="p-1.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition text-gray-500"
-            >
-              <Eye size={14} />
-            </button>
-            <a
-              href={item.url}
-              download
-              className="p-1.5 bg-gov-50 rounded-lg hover:bg-gov-100 transition text-gov-600"
-            >
-              <Download size={14} />
-            </a>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // وضع عرض البطاقات (Grid View)
   return (
     <div
-      className={`bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-2xl transition-all duration-500 relative ${item.featured ? 'ring-2 ring-gold-400 ring-offset-2' : ''}`}
+      className={`group ${bgClass} backdrop-blur-sm rounded-3xl p-6 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 border cursor-pointer overflow-hidden`}
+      aria-label={`دليل: ${guideline.title}`}
+      onClick={() => onNavigate('forms')}
+      role="button"
+      tabIndex={0}
     >
-      {item.featured && (
-        <div className="absolute inset-0 bg-gradient-to-br from-gold-200/40 via-transparent to-transparent pointer-events-none" />
-      )}
-      {item.status === 'منتهي' && (
-        <div className="absolute top-2 left-2 bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow">
-          منتهي
-        </div>
-      )}
+      {/* خلفية متدرجة عند التمرير */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${categoryColors[guideline.category] || 'from-gov-600 to-gov-800'} opacity-0 group-hover:opacity-[0.05] transition-opacity duration-700`}
+      />
 
-      <div className={`px-5 py-4 border-b flex items-center justify-between ${color.bg}`}>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-white/60 backdrop-blur-sm rounded-lg flex items-center justify-center">
-            <Icon
-              size={16}
-              className="text-gov-700"
-            />
-          </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-opacity-90">
-            {item.category}
-          </span>
+      <div className="relative flex items-start justify-between mb-4">
+        <div
+          className={`w-14 h-14 bg-gradient-to-br ${categoryColors[guideline.category] || 'from-gov-600 to-gov-800'} rounded-2xl flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}
+        >
+          <BookOpen
+            size={26}
+            className="text-white"
+          />
         </div>
-        <div className="flex items-center gap-1">
-          {typeIconMap[item.type] || <FileText size={14} />}
-        </div>
-      </div>
-
-      <div className="p-5">
-        <h3 className="font-bold text-gray-800 text-base mb-2 line-clamp-2">{item.title}</h3>
-        <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-3">
-          {item.description}
-        </p>
-
-        {/* ميتا بيانات محسنة */}
-        <div className="flex flex-wrap items-center gap-2 text-[9px] text-gray-400 mb-4">
-          <span className="flex items-center gap-1">
-            <User size={10} /> {item.department}
-          </span>
-          <span className="w-px h-2 bg-gray-200" />
-          <span className="flex items-center gap-1">
-            <Clock size={10} /> {item.updatedAt}
-          </span>
-          {item.version && (
-            <>
-              <span className="w-px h-2 bg-gray-200" />
-              <span className="bg-gray-100 px-1.5 rounded">نسخة {item.version}</span>
-            </>
+        <div className="flex flex-col items-end gap-1">
+          {guideline.isPopular && (
+            <span className="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+              <Star
+                size={12}
+                className="fill-amber-500"
+              />
+              شائع
+            </span>
+          )}
+          {guideline.isNew && (
+            <span className="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-bold animate-pulse">
+              جديد
+            </span>
           )}
         </div>
-
-        {/* أزرار الإجراءات التفاعلية */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => onPreview(item.url)}
-            className="flex-1 flex items-center justify-center gap-2 border border-gray-300 hover:border-gov-300 hover:bg-gov-50 text-gov-700 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all active:scale-95"
-          >
-            <Eye size={16} /> معاينة
-          </button>
-          <a
-            href={item.url}
-            download
-            className="flex-1 flex items-center justify-center gap-2 bg-gov-600 hover:bg-gov-700 text-white py-2.5 px-4 rounded-xl text-sm font-semibold transition-all hover:shadow-lg active:scale-95"
-          >
-            <Download size={16} /> تحميل
-          </a>
-        </div>
       </div>
 
-      <div className="px-5 py-2 bg-gray-50 border-t border-gray-100 flex items-center justify-between text-[9px] text-gray-400">
-        <span className="flex items-center gap-1">
-          <CheckCircle2
-            size={10}
-            className="text-emerald-500"
-          />{' '}
-          {item.classification}
-        </span>
-        <span className="flex items-center gap-1">
-          <Eye size={10} /> {item.views.toLocaleString()}
-        </span>
+      <h3
+        className={`relative font-bold text-lg ${textClass} mb-2 group-hover:text-gov-700 transition-colors`}
+      >
+        {guideline.title}
+      </h3>
+      <p className="relative text-gray-500 text-sm leading-relaxed mb-4 line-clamp-3">
+        {guideline.description}
+      </p>
+
+      {/* الخطوات المختصرة */}
+      {guideline.steps && guideline.steps.length > 0 && (
+        <div className="relative space-y-1.5 mb-4">
+          <div className="flex items-center gap-1 text-xs font-bold text-gov-700 mb-1">
+            <CheckCircle size={12} />
+            خطوات الإجراء:
+          </div>
+          {guideline.steps.slice(0, 3).map((step, idx) => (
+            <div
+              key={idx}
+              className="flex items-start gap-2 text-xs text-gray-600"
+            >
+              <div className="w-4 h-4 rounded-full bg-gov-100 text-gov-700 flex items-center justify-center text-[10px] font-bold shrink-0">
+                {idx + 1}
+              </div>
+              <span className="line-clamp-1">{step}</span>
+            </div>
+          ))}
+          {guideline.steps.length > 3 && (
+            <div className="text-xs text-gov-600 font-medium pr-5">
+              +{guideline.steps.length - 3} خطوات أخرى
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* الرسوم والفئة */}
+      <div className="relative flex items-center justify-between pt-4 border-t border-gray-100/50">
+        <div className="flex items-center gap-2 flex-wrap">
+          {guideline.fees && guideline.fees.min > 0 && (
+            <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full" />
+              {guideline.fees.min.toLocaleString()}+ ريال
+            </span>
+          )}
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-full bg-gov-50 text-gov-700`}>
+            {guideline.category === 'residential'
+              ? 'سكني'
+              : guideline.category === 'commercial'
+                ? 'تجاري'
+                : guideline.category === 'industrial'
+                  ? 'صناعي'
+                  : guideline.category === 'agricultural'
+                    ? 'زراعي'
+                    : guideline.category === 'educational'
+                      ? 'تعليمي'
+                      : 'صحي'}
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-xs text-gray-500">
+          <span className="flex items-center gap-1">
+            <Eye size={14} />
+            {guideline.views?.toLocaleString() || 0}
+          </span>
+          <span className="flex items-center gap-1">
+            <Download size={14} />
+            {guideline.downloads || 0}
+          </span>
+        </div>
       </div>
     </div>
   );
 });
 
 // ============================================================
-// 5. الصفحة الرئيسية المتكاملة (Enterprise Knowledge Hub)
+// 4. المكون الرئيسي
 // ============================================================
-export default function GuidelinesPage() {
-  const { goBack, canGoBack } = useNavigation();
-  const [search, setSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<DocumentCategory | 'الكل'>('الكل');
-  const [departmentFilter, setDepartmentFilter] = useState<string>('الكل');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
-  const [sortBy, setSortBy] = useState<'date' | 'title' | 'downloads'>('date');
-  const { previewUrl, isOpen, openPreview, closePreview } = useFilePreview();
 
-  // استخراج الفئات والإدارات
-  const categories = ['الكل', ...Array.from(new Set(guidelinesData.map((d) => d.category)))];
-  const departments = ['الكل', ...Array.from(new Set(guidelinesData.map((d) => d.department)))];
+interface GuidelinesPageProps {
+  onNavigate: (page: Page) => void;
+  theme?: 'light' | 'dark';
+}
 
-  // الفلترة المتقدمة
-  const filteredData = useMemo(() => {
-    const data = guidelinesData.filter((item) => {
-      const matchSearch =
-        item.title.includes(search) ||
-        item.description.includes(search) ||
-        item.keywords?.some((k) => k.includes(search));
-      const matchCategory = categoryFilter === 'الكل' || item.category === categoryFilter;
-      const matchDepartment = departmentFilter === 'الكل' || item.department === departmentFilter;
-      return matchSearch && matchCategory && matchDepartment;
-    });
+export default memo(function GuidelinesPage({ onNavigate, theme = 'light' }: GuidelinesPageProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-    // الترتيب المتقدم
-    switch (sortBy) {
-      case 'date':
-        data.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
-        break;
-      case 'title':
-        data.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case 'downloads':
-        data.sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
-        break;
+  const filteredGuidelines = useMemo(() => {
+    let filtered = [...GUIDELINES_DATA];
+
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter((g) => g.category === selectedCategory);
     }
-    return data;
-  }, [search, categoryFilter, departmentFilter, sortBy]);
 
-  const stats = useLibraryStats(guidelinesData);
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (g) => g.title.toLowerCase().includes(query) || g.description.toLowerCase().includes(query),
+      );
+    }
 
-  const handleBack = useCallback(() => {
-    if (canGoBack) goBack();
-  }, [canGoBack, goBack]);
+    return filtered;
+  }, [searchQuery, selectedCategory]);
+
+  const bgClass = theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50';
+  const cardBgClass = theme === 'dark' ? 'bg-gray-800' : 'bg-white';
 
   return (
-    <div
-      className="min-h-screen" style={{ background: 'var(--bg-page)', color: 'var(--text-primary)' }}
+    <main
+      className={`min-h-screen ${bgClass} py-16 transition-colors duration-300`}
       dir="rtl"
     >
-      {/* 1. شريط التنقل العلوي */}
-      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <button
-            onClick={handleBack}
-            disabled={!canGoBack}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${canGoBack ? 'text-gov-600 hover:bg-gov-50' : 'text-gray-300 cursor-not-allowed'}`}
-          >
-            <ArrowLeft size={18} /> رجوع
-          </button>
-          <div className="flex items-center gap-3 text-xs text-gray-500">
-            <Building2
-              size={14}
-              className="text-gov-600"
+      {/* الشريط العلوي */}
+      <div className="bg-gov-900 text-white py-4 px-4 border-b border-gold-500/20">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <BookOpen
+              size={24}
+              className="text-gold-400"
             />
-            <span className="font-bold text-gov-700">المكتبة المؤسسية</span>
-            <span className="text-[10px] bg-gov-50 px-2 py-0.5 rounded-full text-gov-600">
-              {filteredData.length} وثيقة
-            </span>
+            <div>
+              <h1 className="text-xl font-bold">الدليل الإرشادي الرسمي</h1>
+              <p className="text-xs text-white/60">مكتب الأشغال العامة والطرق - محافظة ذمار</p>
+            </div>
           </div>
+          <div className="text-xs text-white/60">{filteredGuidelines.length} دليل متاح</div>
         </div>
       </div>
 
-      {/* 2. قسم البطل الاحترافي (Hero + Dashboard) */}
-      <div className="relative bg-gov-800 text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[url('/vite.svg')] bg-cover bg-center opacity-10" />
-          <div className="absolute inset-0 bg-gradient-to-br from-gov-800/90 via-gov-900/90 to-black/80" />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
-          <ScrollReveal>
-            <div className="inline-flex items-center gap-2 bg-gold-500/15 border border-gold-500/30 text-gold-300 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
-              <LayoutDashboard size={14} /> مكتبة المعرفة المؤسسية
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight">
-              الدليل الإرشادي والمرجع الشامل
-            </h1>
-            <p className="text-white/70 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-6">
-              تصفح الأدلة الرسمية والفصول التقنية والنماذج المعتمدة التي توجّه إجراءات المكتب وتدعم
-              قرارات الأعمال الهندسية والإدارية في محافظة ذمار.
-            </p>
-            <div className="max-w-4xl mx-auto grid gap-3 sm:grid-cols-3 mb-10 text-white/80 text-sm">
-              <div className="rounded-3xl bg-white/10 border border-white/15 p-4">
-                <div className="font-semibold text-white mb-1">مرجع رسمي</div>
-                <div>دليل موحّد معتمد لجميع خدمات المكتب.</div>
-              </div>
-              <div className="rounded-3xl bg-white/10 border border-white/15 p-4">
-                <div className="font-semibold text-white mb-1">تصنيف دقيق</div>
-                <div>وثائق مقسمة إلى أدلة، فصول، نماذج، وصور هندسية.</div>
-              </div>
-              <div className="rounded-3xl bg-white/10 border border-white/15 p-4">
-                <div className="font-semibold text-white mb-1">دعم اتخاذ القرار</div>
-                <div>مصدر سريع للمهندسين والإداريين وأصحاب المصلحة.</div>
-              </div>
-            </div>
-
-            {/* لوحة إحصائيات المكتب (Enterprise Dashboard) */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-5xl mx-auto">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/5 hover:bg-white/15 transition">
-                <Database
-                  size={20}
-                  className="text-gold-400 mx-auto mb-1"
-                />
-                <div className="text-xl font-bold text-white">{stats.totalDocuments}</div>
-                <div className="text-[10px] text-white/50">إجمالي الوثائق</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/5 hover:bg-white/15 transition">
-                <TrendingUp
-                  size={20}
-                  className="text-gold-400 mx-auto mb-1"
-                />
-                <div className="text-xl font-bold text-white">{stats.activeDocuments}</div>
-                <div className="text-[10px] text-white/50">وثائق نشطة</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/5 hover:bg-white/15 transition">
-                <Download
-                  size={20}
-                  className="text-gold-400 mx-auto mb-1"
-                />
-                <div className="text-xl font-bold text-white">
-                  {stats.totalDownloads.toLocaleString()}
-                </div>
-                <div className="text-[10px] text-white/50">إجمالي التحميلات</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/5 hover:bg-white/15 transition">
-                <Eye
-                  size={20}
-                  className="text-gold-400 mx-auto mb-1"
-                />
-                <div className="text-xl font-bold text-white">
-                  {stats.totalViews.toLocaleString()}
-                </div>
-                <div className="text-[10px] text-white/50">إجمالي المشاهدات</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/5 hover:bg-white/15 transition">
-                <Calendar
-                  size={20}
-                  className="text-gold-400 mx-auto mb-1"
-                />
-                <div className="text-xl font-bold text-white text-[14px]">{stats.latestUpdate}</div>
-                <div className="text-[10px] text-white/50">آخر تحديث</div>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </div>
-
-      {/* 3. المحتوى الرئيسي */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* أ. أدوات التحكم المتقدمة (Advanced Filters) */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm mb-10">
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            {/* البحث المتقدم */}
-            <div className="flex items-center gap-3 flex-1 w-full bg-gray-50 rounded-xl px-4 py-2 border border-gray-200 focus-within:border-gov-500 transition">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* البحث والتصفية */}
+        <div className="my-10">
+          <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
+            {/* مربع البحث */}
+            <div className="relative flex-1">
               <Search
                 size={18}
-                className="text-gray-400"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
               />
               <input
                 type="text"
-                placeholder="بحث بالعنوان، الوصف، أو كلمة مفتاحية..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full border-0 outline-none text-sm bg-transparent"
+                placeholder="ابحث في الأدلة الإرشادية..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pr-12 pl-4 py-3 rounded-2xl border focus:ring-2 focus:ring-gov-500 focus:border-transparent outline-none text-sm ${cardBgClass}`}
               />
-              {search && (
-                <button
-                  onClick={() => setSearch('')}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <X size={16} />
-                </button>
-              )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              {/* تصفية حسب الفئة */}
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value as DocumentCategory | 'الكل')}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200 outline-none cursor-pointer"
-              >
-                {categories.map((c) => (
-                  <option
-                    key={c}
-                    value={c}
-                  >
-                    {c}
-                  </option>
-                ))}
-              </select>
-
-              {/* تصفية حسب القسم */}
-              <select
-                value={departmentFilter}
-                onChange={(e) => setDepartmentFilter(e.target.value)}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200 outline-none cursor-pointer"
-              >
-                {departments.map((d) => (
-                  <option
-                    key={d}
-                    value={d}
-                  >
-                    {d}
-                  </option>
-                ))}
-              </select>
-
-              {/* الترتيب */}
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'date' | 'title' | 'downloads')}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200 outline-none cursor-pointer"
-              >
-                <option value="date">الأحدث</option>
-                <option value="title">حسب العنوان</option>
-                <option value="downloads">الأكثر تحميلاً</option>
-              </select>
-
-              {/* تبديل العرض */}
-              <div className="flex items-center gap-1 border-r border-gray-200 pr-3 mr-2">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition ${viewMode === 'grid' ? 'bg-gov-50 text-gov-600' : 'text-gray-400 hover:text-gray-600'}`}
-                >
-                  <Grid3X3 size={16} />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition ${viewMode === 'list' ? 'bg-gov-50 text-gov-600' : 'text-gray-400 hover:text-gray-600'}`}
-                >
-                  <List size={16} />
-                </button>
-              </div>
-            </div>
+            {/* أزرار التصفية */}
+            <button className="flex items-center gap-2 px-5 py-3 rounded-2xl border border-gov-200 bg-gov-50 text-gov-700 font-bold text-sm hover:bg-gov-100 transition-colors">
+              <Filter size={16} />
+              تصفية متقدمة
+            </button>
           </div>
         </div>
 
-        {/* ب. عرض النتائج المتقدم */}
-        {filteredData.length === 0 ? (
+        {/* الفئات */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`p-4 rounded-2xl text-center transition-all duration-300 ${
+              selectedCategory === 'all'
+                ? 'bg-gov-600 text-white shadow-lg scale-105'
+                : `${cardBgClass} text-gray-600 hover:shadow-md`
+            }`}
+          >
+            <Layers
+              size={24}
+              className="mx-auto mb-2"
+            />
+            <span className="text-xs font-bold">جميع الأنواع</span>
+          </button>
+
+          {GUIDELINE_CATEGORIES.map((category) => {
+            const Icon = category.icon;
+            return (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`p-4 rounded-2xl text-center transition-all duration-300 ${
+                  selectedCategory === category.id
+                    ? 'bg-gov-600 text-white shadow-lg scale-105'
+                    : `${cardBgClass} text-gray-600 hover:shadow-md`
+                }`}
+              >
+                <div
+                  className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-xl flex items-center justify-center mx-auto mb-2`}
+                >
+                  <Icon
+                    size={20}
+                    className="text-white"
+                  />
+                </div>
+                <span className="text-xs font-bold">{category.title}</span>
+                {category.count && (
+                  <span className="block text-[10px] mt-1 opacity-70">{category.count} دليل</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* الدليل */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredGuidelines.map((guideline) => (
+            <GuidelineCard
+              key={guideline.id}
+              guideline={guideline}
+              onNavigate={onNavigate}
+              theme={theme}
+            />
+          ))}
+        </div>
+
+        {/* لا توجد نتائج */}
+        {filteredGuidelines.length === 0 && (
           <div className="text-center py-20">
-            <FolderOpen
+            <AlertCircle
               size={64}
               className="mx-auto text-gray-300 mb-4"
             />
-            <h3 className="text-xl font-bold text-gray-500 mb-2">لا توجد وثائق مطابقة</h3>
-            <p className="text-gray-400">حاول تعديل معايير البحث أو الفلتر</p>
-          </div>
-        ) : (
-          <div
-            className={`space-y-4 ${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 space-y-0' : ''}`}
-          >
-            {filteredData.map((item, index) => (
-              <ScrollReveal
-                key={item.id}
-                delay={Math.min(index * 30, 400)}
-              >
-                <GuidelineCard
-                  item={item}
-                  onPreview={openPreview}
-                  viewMode={viewMode}
-                />
-              </ScrollReveal>
-            ))}
+            <h3 className="text-xl font-bold text-gray-600 mb-2">لا توجد أدلة مطابقة للبحث</h3>
+            <p className="text-gray-500">حاول تعديل مصطلحات البحث أو إعادة المحاولة</p>
           </div>
         )}
 
-        {/* ج. شريط الدعم المؤسسي */}
-        <ScrollReveal>
-          <div className="mt-16 bg-gradient-to-br from-gov-700 to-gov-800 rounded-3xl p-8 md:p-10 text-white relative overflow-hidden shadow-xl">
-            <div className="geo-pattern absolute inset-0 opacity-5" />
-
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-5">
-                <div className="w-16 h-16 bg-gold-500/20 rounded-2xl flex items-center justify-center">
-                  <Info
-                    size={32}
-                    className="text-gold-400"
-                  />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-1">تحتاج مساعدة في البحث أو الإرشاد؟</h3>
-                  <p className="text-white/70 text-sm">
-                    فريق الدعم الفني للمكتبة المؤسسية جاهز لمساعدتك في أي استفسار.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <a
-                  href="tel:+967777888198"
-                  className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-xl text-sm font-semibold transition border border-white/10"
-                >
-                  <Phone size={16} /> 777-888-198
-                </a>
-                <button
-                  onClick={() => window.open('/contact', '_self')}
-                  className="flex items-center gap-2 bg-gold-500 hover:bg-gold-600 text-gov-900 px-6 py-3 rounded-xl text-sm font-semibold transition shadow-lg shadow-gold-500/25"
-                >
-                  <MessageCircle size={16} /> تواصل معنا
-                </button>
-              </div>
-            </div>
-          </div>
-        </ScrollReveal>
-      </div>
-
-      {/* 4. نافذة المعاينة المتطورة (Professional Viewer) */}
-      {isOpen && previewUrl && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex items-center justify-center p-4 sm:p-8 animate-in fade-in duration-300">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-6xl h-[92vh] flex flex-col overflow-hidden relative">
-            <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50/80">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gov-100 rounded-lg flex items-center justify-center">
-                  <Eye
-                    size={16}
-                    className="text-gov-600"
-                  />
-                </div>
-                <h3 className="font-bold text-gray-800 text-sm">معاينة الوثيقة</h3>
-              </div>
-              <div className="flex items-center gap-2">
-                <a
-                  href={previewUrl}
-                  download
-                  className="p-2 rounded-lg bg-gov-50 text-gov-600 hover:bg-gov-100 transition"
-                  title="تحميل"
-                >
-                  <Download size={18} />
-                </a>
-                <button
-                  onClick={closePreview}
-                  className="p-2 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition"
-                  title="إغلاق"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 bg-gray-100 relative overflow-hidden">
-              {previewUrl.endsWith('.pdf') ? (
-                <iframe
-                  src={`${previewUrl}#zoom=fit`}
-                  className="w-full h-full"
-                  title="معاينة PDF"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                  <img
-                    src={previewUrl}
-                    alt="معاينة"
-                    className="max-w-full max-h-full object-contain bg-white shadow-2xl"
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center justify-end p-3 border-t border-gray-100 bg-white text-[10px] text-gray-400">
-              <span className="flex items-center gap-1">
-                <Shield size={12} /> معاينة آمنة - لا يتم حفظ البيانات
-              </span>
+        {/* التواصل */}
+        <div className="mt-20 text-center">
+          <div className="inline-flex items-center gap-4 bg-gov-50 border border-gov-200 px-8 py-6 rounded-2xl">
+            <Phone
+              size={24}
+              className="text-gov-600"
+            />
+            <div className="text-right">
+              <h4 className="font-bold text-gov-800">هل تحتاج مساعدة في الدليل الإرشادي؟</h4>
+              <p className="text-sm text-gray-600">
+                اتصل بنا على 777-888-198 أو تواصل عبر البريد الإلكتروني
+              </p>
             </div>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    </main>
   );
-}
+});
+
+// تصدير البيانات للاستخدام في HomePage
+export { GUIDELINE_CATEGORIES, GUIDELINES_DATA };
+export type { Guideline, GuidelineCategory };

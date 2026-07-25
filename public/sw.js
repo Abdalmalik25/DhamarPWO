@@ -1,8 +1,8 @@
 // ============================================================
-// PRODUCTION Service Worker مع Cache-First + Network-Fallback
+// PRODUCTION Service Worker Pro v4.0 - Intelligent Caching
 // ============================================================
 
-const CACHE_VERSION = 'pwo-v3';
+const CACHE_VERSION = 'pwo-v4';
 const OFFLINE_URL = '/offline.html';
 
 // قائمة الملفات الأساسية للتخزين المؤقت
@@ -12,16 +12,13 @@ const PRECACHE_URLS = [
   '/offline.html',
   '/manifest.json',
   '/favicon.ico',
-  '/vite.svg',
+  '/icons/favicon-32x32.png',
 ];
 
 // استراتيجيات التخزين حسب نوع الملف
 const STRATEGIES = {
-  // ملفات static - cache first
   STATIC: /\.(js|css|png|jpg|jpeg|gif|svg|webp|ico|woff2?|eot|ttf|otf)$/,
-  // HTML - network first
   HTML: /\.(html)$/,
-  // صور من CDNs - cache first
   CDN: /https?:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|images\.pexels\.com)/,
 };
 
@@ -30,14 +27,13 @@ const CACHES = {
   PRECACHE: `precache-${CACHE_VERSION}`,
   RUNTIME: `runtime-${CACHE_VERSION}`,
   IMAGES: `images-${CACHE_VERSION}`,
+  API: `api-${CACHE_VERSION}`,
 };
 
-// تثبيت التطبيق - تخزين مسبق للملفات الأساسية
+// تثبيت التطبيق - تخزين مسبق ذكي
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing...');
+  console.log('[SW] Installing Pro v4.0...');
 
-  // نتخطى التخزين المسبق في وضع التطوير (dev)
-  // لأن الملفات تُخدم عبر Vite dev server وقد لا تكون متاحة
   if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
     console.log('[SW] Dev mode - skipping precache');
     self.skipWaiting();
@@ -55,6 +51,12 @@ self.addEventListener('install', (event) => {
           });
         })
       );
+    }).then(() => {
+      // تهيئة كاش الصور
+      return caches.open(CACHES.IMAGES);
+    }).then(() => {
+      // تهيئة كاش API
+      return caches.open(CACHES.API);
     })
   );
   
@@ -63,7 +65,7 @@ self.addEventListener('install', (event) => {
 
 // تفعيل - تنظيف الكاش القديمة
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating...');
+  console.log('[SW] Activating Pro v4.0...');
   
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -78,7 +80,6 @@ self.addEventListener('activate', (event) => {
     })
   );
   
-  // السيطرة على جميع العملاء فوراً
   self.clients.claim();
 });
 
@@ -102,6 +103,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // API calls - Network First with cache fallback
+  if (url.pathname.startsWith('/api/')) {
+    event.respondWith(networkFirst(request, CACHES.API));
+    return;
+  }
+
   // HTML pages - Network First
   if (request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(networkFirst(request, CACHES.RUNTIME, OFFLINE_URL));
@@ -114,7 +121,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Images - Cache First with fallback
+  // Images - Cache First with intelligent caching
   if (url.pathname.match(/\.(png|jpg|jpeg|gif|svg|webp)$/)) {
     event.respondWith(cacheFirst(request, CACHES.IMAGES));
     return;
@@ -125,7 +132,7 @@ self.addEventListener('fetch', (event) => {
 });
 
 // ============================================================
-// استراتيجيات التخزين المؤقت
+// استراتيجيات التخزين المؤقت المتقدمة
 // ============================================================
 
 // Cache First - يبحث في الكاش أولاً
@@ -191,8 +198,8 @@ self.addEventListener('sync', (event) => {
 // المزامنة مع السيرفر
 async function syncData() {
   try {
-    // يمكن إضافة منطق المزامنة هنا
     console.log('[SW] Syncing data...');
+    // يمكن إضافة منطق المزامنة هنا
   } catch (error) {
     console.error('[SW] Sync failed:', error);
   }
@@ -218,11 +225,60 @@ self.addEventListener('message', (event) => {
         )
       );
       break;
+
+    case 'PREFETCH_PAGES':
+      // تخزين مسبق ذكي للصفحات
+      event.waitUntil(smartPrefetch(payload.pages));
+      break;
+      
+    case 'CACHE_IMAGE':
+      // تخزين صورة في الكاش
+      event.waitUntil(cacheImage(payload.url));
+      break;
       
     default:
       break;
   }
 });
+
+// ============================================================
+// ميزات ذكية - Smart Features
+// ============================================================
+
+// تخزين مسبق ذكي للصفحات
+async function smartPrefetch(pages) {
+  if (!pages || !Array.isArray(pages)) return;
+  
+  console.log('[SW] Smart prefetching:', pages);
+  
+  const cache = await caches.open(CACHES.RUNTIME);
+  
+  for (const page of pages) {
+    try {
+      const response = await fetch(page);
+      if (response.ok) {
+        await cache.put(page, response.clone());
+        console.log('[SW] Prefetched:', page);
+      }
+    } catch (error) {
+      console.warn('[SW] Failed to prefetch:', page, error);
+    }
+  }
+}
+
+// تخزين صورة في الكاش
+async function cacheImage(url) {
+  try {
+    const cache = await caches.open(CACHES.IMAGES);
+    const response = await fetch(url);
+    if (response.ok) {
+      await cache.put(url, response.clone());
+      console.log('[SW] Image cached:', url);
+    }
+  } catch (error) {
+    console.warn('[SW] Failed to cache image:', url, error);
+  }
+}
 
 // تنظيف دوري للصور القديمة
 self.addEventListener('periodicsync', (event) => {
@@ -248,3 +304,24 @@ async function cleanOldImages() {
     }
   }
 }
+
+// ============================================================
+// Performance Monitoring
+// ============================================================
+
+// أحصائيات الأداء
+const performanceStats = {
+  startTime: Date.now(),
+  requestCount: 0,
+  errorCount: 0,
+};
+
+// الحصول على إحصائيات الأداء
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'GET_PERFORMANCE_STATS') {
+    event.ports[0]?.postMessage({
+      ...performanceStats,
+      uptime: Date.now() - performanceStats.startTime,
+    });
+  }
+});

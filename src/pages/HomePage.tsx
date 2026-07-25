@@ -24,15 +24,12 @@ import {
   Maximize2,
   Award,
 } from 'lucide-react';
-import HomePageLogo from '../components/HomePageLogo';
 import HeroSection from './home/sections/HeroSection';
 import DhamarMap from '../components/DhamarMap';
 import type { AwarenessContent } from './home/homeData';
 
 const AboutOfficeSection = lazy(() => import('./home/sections/AboutOfficeSection'));
-
 const ServicesSection = lazy(() => import('./home/sections/ServicesSection'));
-
 const AnnouncementsSection = lazy(() => import('./home/sections/AnnouncementsSection'));
 const FAQSection = lazy(() => import('./home/sections/FAQSection'));
 const ContactCTASection = lazy(() => import('./home/sections/ContactCTASection'));
@@ -45,7 +42,6 @@ import {
   FALLBACK_QUICK_LINKS as QUICK_LINKS_DATA,
   FALLBACK_AWARENESS,
   getAwarenessByCategory,
-  getFeaturedAwareness,
 } from './home/homeData';
 
 const SITE_CONFIG = {
@@ -81,6 +77,33 @@ const SITE_CONFIG = {
   developer: 'فريق التطوير - مكتب الأشغال العامة والطرق',
 };
 
+// ============================================================
+// Intersection Observer hook for section-enter animations
+// ============================================================
+function useSectionInView(ref: React.RefObject<HTMLElement | null>) {
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.unobserve(node);
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return inView;
+}
+
 const SectionLoader = memo(
   ({ message = 'جاري التحميل...', showLogo = true }: { message?: string; showLogo?: boolean }) => (
     <div
@@ -113,6 +136,31 @@ const SectionLoader = memo(
   ),
 );
 SectionLoader.displayName = 'SectionLoader';
+
+// ============================================================
+// Wrapped Section with scroll-triggered entrance animation
+// ============================================================
+const AnimatedSection = memo(function AnimatedSection({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const inView = useSectionInView(sectionRef);
+
+  return (
+    <div
+      ref={sectionRef}
+      className={`${className} transition-all duration-1000 ease-out ${
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+      }`}
+    >
+      {children}
+    </div>
+  );
+});
 
 const OfficialStatusBar = memo(() => {
   const [currentTime, setCurrentTime] = useState('');
@@ -180,38 +228,18 @@ const OfficialStatusBar = memo(() => {
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between text-[10px] text-white/60">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-1.5">
-            <Shield
-              size={10}
-              className="text-gold-400"
-              aria-hidden="true"
-            />
+            <Shield size={10} className="text-gold-400" aria-hidden="true" />
             <span className="font-medium">{SITE_CONFIG.ministry}</span>
           </div>
-          <span
-            className="w-px h-3 bg-white/10"
-            aria-hidden="true"
-          />
+          <span className="w-px h-3 bg-white/10" aria-hidden="true" />
           <div className="flex items-center gap-1.5">
-            <Scale
-              size={10}
-              className="text-gold-400"
-              aria-hidden="true"
-            />
+            <Scale size={10} className="text-gold-400" aria-hidden="true" />
             <span>{SITE_CONFIG.legalReferences[0]}</span>
           </div>
-          <span
-            className="w-px h-3 bg-white/10"
-            aria-hidden="true"
-          />
+          <span className="w-px h-3 bg-white/10" aria-hidden="true" />
           <div className="flex items-center gap-1.5">
-            <Flag
-              size={10}
-              className="text-gold-400"
-              aria-hidden="true"
-            />
-            <span>
-              {SITE_CONFIG.country} - {SITE_CONFIG.governorate}
-            </span>
+            <Flag size={10} className="text-gold-400" aria-hidden="true" />
+            <span>{SITE_CONFIG.country} - {SITE_CONFIG.governorate}</span>
           </div>
         </div>
         <div className="flex items-center gap-4 flex-wrap">
@@ -222,49 +250,25 @@ const OfficialStatusBar = memo(() => {
             />
             <span>{isOnline ? 'النظام متصل' : 'النظام غير متصل'}</span>
           </div>
-          <span
-            className="w-px h-3 bg-white/10"
-            aria-hidden="true"
-          />
+          <span className="w-px h-3 bg-white/10" aria-hidden="true" />
           <div className="flex items-center gap-1.5">
-            <AwardIcon
-              size={10}
-              className="text-gold-400"
-              aria-hidden="true"
-            />
+            <AwardIcon size={10} className="text-gold-400" aria-hidden="true" />
             <span>خدمات حكومية موثوقة</span>
           </div>
-          <span
-            className="w-px h-3 bg-white/10"
-            aria-hidden="true"
-          />
+          <span className="w-px h-3 bg-white/10" aria-hidden="true" />
           <div className="flex items-center gap-1.5">
-            <Calendar
-              size={10}
-              className="text-gold-400"
-              aria-hidden="true"
-            />
+            <Calendar size={10} className="text-gold-400" aria-hidden="true" />
             <span>{currentDate}</span>
           </div>
           {currentHijriDate && (
             <>
-              <span
-                className="w-px h-3 bg-white/10"
-                aria-hidden="true"
-              />
+              <span className="w-px h-3 bg-white/10" aria-hidden="true" />
               <span className="text-white/40">{currentHijriDate}</span>
             </>
           )}
-          <span
-            className="w-px h-3 bg-white/10"
-            aria-hidden="true"
-          />
+          <span className="w-px h-3 bg-white/10" aria-hidden="true" />
           <div className="flex items-center gap-1.5 font-mono">
-            <Clock
-              size={10}
-              className="text-gold-400"
-              aria-hidden="true"
-            />
+            <Clock size={10} className="text-gold-400" aria-hidden="true" />
             <span className="text-white/80 tabular-nums">{currentTime}</span>
           </div>
         </div>
@@ -310,26 +314,11 @@ const ScrollToTopButton = memo(() => {
       aria-label="العودة إلى أعلى الصفحة"
     >
       <div className="relative">
-        <svg
-          className="w-14 h-14 -rotate-90"
-          aria-hidden="true"
-        >
+        <svg className="w-14 h-14 -rotate-90" aria-hidden="true">
+          <circle cx="28" cy="28" r="24" stroke="currentColor" strokeWidth="3" fill="none" className="text-gray-200" />
           <circle
-            cx="28"
-            cy="28"
-            r="24"
-            stroke="currentColor"
-            strokeWidth="3"
-            fill="none"
-            className="text-gray-200"
-          />
-          <circle
-            cx="28"
-            cy="28"
-            r="24"
-            stroke="currentColor"
-            strokeWidth="3"
-            fill="none"
+            cx="28" cy="28" r="24"
+            stroke="currentColor" strokeWidth="3" fill="none"
             strokeDasharray={`${progress * 1.5} 150`}
             className="text-gold-500 transition-all duration-300"
             strokeLinecap="round"
@@ -337,11 +326,7 @@ const ScrollToTopButton = memo(() => {
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-10 h-10 bg-gradient-to-br from-gov-700 to-gov-800 hover:from-gov-800 hover:to-gov-900 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center">
-            <ChevronUp
-              size={20}
-              className="group-hover:-translate-y-0.5 transition-transform"
-              aria-hidden="true"
-            />
+            <ChevronUp size={20} className="group-hover:-translate-y-0.5 transition-transform" aria-hidden="true" />
           </div>
         </div>
         <span className="absolute -top-1 -right-1 w-3 h-3 bg-gold-400 rounded-full animate-ping" />
@@ -447,77 +432,97 @@ export default function HomePage({
       aria-label={`الصفحة الرئيسية - ${SITE_CONFIG.fullName} - ${SITE_CONFIG.governorate}`}
       dir="rtl"
     >
-      <OfficialStatusBar />
-      <HeroSection
-        onNavigate={handleNavigatePage}
-      />
-      <Suspense fallback={<SectionLoader message="جاري تحميل نبذة عن المكتب..." />}>
-        <AboutOfficeSection
-          onNavigate={handleNavigatePage}
-          stats={stats}
-          theme={theme}
-        />
-      </Suspense>
-      <Suspense fallback={<SectionLoader message="جاري تحميل الروابط السريعة..." />}>
-        <QuickLinksSection
-          links={quickLinks}
-          onNavigate={handleNavigatePage}
-          theme={theme}
-        />
-      </Suspense>
-      <MapHighlightSection />
-      <Suspense fallback={<SectionLoader message="جاري تحميل الخدمات..." />}>
-        <ServicesSection
-          services={services}
-          onNavigate={handleNavigatePage}
-          theme={theme}
-          title="خدماتنا الهندسية والفنية"
-          subtitle="نقدم مجموعة متكاملة من الخدمات وفق أحدث المعايير واللوائح النافذة"
-        />
-      </Suspense>
-      <Suspense fallback={<SectionLoader message="جاري تحميل المحتوى التوعوي والارشادي..." />}>
-        <AdvancedAwarenessSection theme={theme} />
-      </Suspense>
-      <Suspense fallback={<SectionLoader message="جاري تحميل الإعلانات..." />}>
-        <AnnouncementsSection
-          announcements={announcements}
-          onNavigate={handleNavigatePage}
-          theme={theme}
-          title="آخر الإعلانات والمستجدات"
-          subtitle="تابع أحدث الأخبار والإعلانات الرسمية من المكتب"
-          showViewAll
-          autoSlide
-          slideInterval={5000}
-        />
-      </Suspense>
-      <Suspense fallback={<SectionLoader message="جاري تحميل الأسئلة الشائعة..." />}>
-        <FAQSection
-          faqs={faqs}
-          theme={theme}
-          title="الأسئلة الشائعة"
-          subtitle="إجابات واضحة على أكثر الأسئلة تداولاً من قبل المواطنين"
-          showAllLink
-        />
-      </Suspense>
-      <Suspense fallback={<SectionLoader message="جاري تحميل معلومات التواصل..." />}>
-        <ContactCTASection
-          onNavigate={handleNavigatePage}
-          theme={theme}
-        />
-      </Suspense>
-      <Suspense
-        fallback={
-          <SectionLoader
-            message="جاري تحميل التذييل..."
-            showLogo={false}
+      {/* ===== HeroSection - القسم الرئيسي ===== */}
+      <HeroSection onNavigate={handleNavigatePage} />
+
+      {/* ===== كل قسم ملفوف بـ AnimatedSection للظهور التدريجي ===== */}
+
+      <AnimatedSection>
+        <Suspense fallback={<SectionLoader message="جاري تحميل نبذة عن المكتب..." />}>
+          <AboutOfficeSection
+            onNavigate={handleNavigatePage}
+            stats={stats}
           />
-        }
-      >
-        <FooterSection
-          onNavigate={handleNavigatePage}
-          theme={theme}
-        />
-      </Suspense>
+        </Suspense>
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <Suspense fallback={<SectionLoader message="جاري تحميل الروابط السريعة..." />}>
+          <QuickLinksSection
+            links={quickLinks}
+            onNavigate={handleNavigatePage}
+            theme={theme}
+          />
+        </Suspense>
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <MapHighlightSection />
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <Suspense fallback={<SectionLoader message="جاري تحميل الخدمات..." />}>
+          <ServicesSection
+            services={services}
+            onNavigate={handleNavigatePage}
+            theme={theme}
+            title="خدماتنا الهندسية والفنية"
+            subtitle="نقدم مجموعة متكاملة من الخدمات وفق أحدث المعايير واللوائح النافذة"
+          />
+        </Suspense>
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <Suspense fallback={<SectionLoader message="جاري تحميل المحتوى التوعوي والارشادي..." />}>
+          <AdvancedAwarenessSection theme={theme} />
+        </Suspense>
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <Suspense fallback={<SectionLoader message="جاري تحميل الإعلانات..." />}>
+          <AnnouncementsSection
+            announcements={announcements}
+            onNavigate={handleNavigatePage}
+            theme={theme}
+            title="آخر الإعلانات والمستجدات"
+            subtitle="تابع أحدث الأخبار والإعلانات الرسمية من المكتب"
+            showViewAll
+            autoSlide
+            slideInterval={5000}
+          />
+        </Suspense>
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <Suspense fallback={<SectionLoader message="جاري تحميل الأسئلة الشائعة..." />}>
+          <FAQSection
+            faqs={faqs}
+            theme={theme}
+            title="الأسئلة الشائعة"
+            subtitle="إجابات واضحة على أكثر الأسئلة تداولاً من قبل المواطنين"
+            showAllLink
+          />
+        </Suspense>
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <Suspense fallback={<SectionLoader message="جاري تحميل معلومات التواصل..." />}>
+          <ContactCTASection
+            onNavigate={handleNavigatePage}
+          />
+        </Suspense>
+      </AnimatedSection>
+
+      <AnimatedSection>
+        <Suspense fallback={<SectionLoader message="جاري تحميل التذييل..." showLogo={false} />}>
+          <FooterSection
+            onNavigate={handleNavigatePage}
+            theme={theme}
+          />
+        </Suspense>
+      </AnimatedSection>
+
+      {/* زر العودة للأعلى */}
       <ScrollToTopButton />
     </main>
   );
@@ -543,10 +548,7 @@ const QuickLinksSection = memo(
         className={`py-16 lg:py-20 ${bgClass} border-b ${borderClass} relative overflow-hidden`}
         aria-label="روابط سريعة للخدمات"
       >
-        <div
-          className="absolute inset-0 opacity-[0.015] pointer-events-none"
-          aria-hidden="true"
-        >
+        <div className="absolute inset-0 opacity-[0.015] pointer-events-none" aria-hidden="true">
           <div
             className="absolute inset-0"
             style={{
@@ -569,17 +571,14 @@ const QuickLinksSection = memo(
                 <button
                   key={link.id}
                   onClick={() => onNavigate(link.href)}
-                  className={`group p-5 lg:p-6 rounded-2xl border ${borderClass} bg-gradient-to-br ${theme === 'dark' ? 'from-gray-800 to-gray-800/50' : 'from-white to-gray-50'} hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 relative overflow-hidden`}
+                  className={`group p-5 lg:p-6 rounded-2xl border ${borderClass} bg-gradient-to-br ${theme === 'dark' ? 'from-gray-800 to-gray-800/50' : 'from-white to-gray-50'} hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 relative overflow-hidden card-3d`}
                   style={{ transitionDelay: `${index * 50}ms` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-gold-500/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div
                     className={`relative w-14 h-14 lg:w-16 lg:h-16 bg-gradient-to-r ${link.color} rounded-2xl flex items-center justify-center mx-auto mb-3 lg:mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}
                   >
-                    <Icon
-                      size={24}
-                      className="text-white"
-                    />
+                    <Icon size={24} className="text-white" />
                   </div>
                   <h3
                     className={`relative text-sm font-bold text-center ${textClass} group-hover:text-gold-600 transition-colors`}
@@ -646,10 +645,7 @@ const AdvancedAwarenessSection = memo(({ theme }: { theme?: 'light' | 'dark' }) 
       className={`py-16 lg:py-20 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden ${theme === 'dark' ? 'bg-gray-900' : ''}`}
       aria-label="المحتوى التوعوي والارشادي الهندسي"
     >
-      <div
-        className="absolute inset-0 opacity-[0.02] pointer-events-none"
-        aria-hidden="true"
-      >
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" aria-hidden="true">
         <div
           className="absolute inset-0"
           style={{
@@ -661,10 +657,7 @@ const AdvancedAwarenessSection = memo(({ theme }: { theme?: 'light' | 'dark' }) 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-gov-50 border border-gov-100 px-4 py-2 rounded-full mb-4">
-            <BookOpen
-              size={18}
-              className="text-gov-600"
-            />
+            <BookOpen size={18} className="text-gov-600" />
             <span className="text-sm font-bold text-gov-700">مركز التوعية والارشاد الهندسي</span>
           </div>
           <h2 className="text-2xl lg:text-4xl font-bold text-gray-800 mb-4">
@@ -687,10 +680,7 @@ const AdvancedAwarenessSection = memo(({ theme }: { theme?: 'light' | 'dark' }) 
                 <div
                   className={`w-12 h-12 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center mx-auto mb-3`}
                 >
-                  <Icon
-                    size={24}
-                    className="text-white"
-                  />
+                  <Icon size={24} className="text-white" />
                 </div>
                 <div className="text-2xl font-bold text-gray-800 mb-1">
                   {item.detailedInfo?.statistics?.[0]?.value || '--'}
@@ -741,14 +731,11 @@ const AdvancedAwarenessSection = memo(({ theme }: { theme?: 'light' | 'dark' }) 
                   onClick={() => toggleCardExpand(item.id)}
                 >
                   <div className="absolute inset-0 opacity-20">
-                    <div className="absolute inset-0 bg-[url('/vite.svg')] bg-cover bg-center" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5" />
                   </div>
                   <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all" />
                   <div className="relative z-10 flex items-center justify-center h-full">
-                    <Icon
-                      size={56}
-                      className="text-white drop-shadow-lg"
-                    />
+                    <Icon size={56} className="text-white drop-shadow-lg" />
                   </div>
                   <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
                     <span className="text-xs font-bold text-white">
@@ -773,17 +760,11 @@ const AdvancedAwarenessSection = memo(({ theme }: { theme?: 'light' | 'dark' }) 
 
                   <div className="space-y-2 mb-4">
                     <h4 className="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1">
-                      <CheckCircle
-                        size={12}
-                        className="text-emerald-500"
-                      />
+                      <CheckCircle size={12} className="text-emerald-500" />
                       نقاط رئيسية:
                     </h4>
                     {item.tips.slice(0, isExpanded ? item.tips.length : 3).map((tip, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-start gap-2 text-xs text-gray-600"
-                      >
+                      <div key={idx} className="flex items-start gap-2 text-xs text-gray-600">
                         <div className="w-1.5 h-1.5 rounded-full bg-gold-400 mt-1.5 shrink-0" />
                         <span>{tip}</span>
                       </div>
@@ -794,19 +775,11 @@ const AdvancedAwarenessSection = memo(({ theme }: { theme?: 'light' | 'dark' }) 
                     <div className="mt-4 pt-4 border-t border-gray-100 space-y-4">
                       {detailedInfo.standards && (
                         <div>
-                          <h4 className="text-xs font-bold text-gov-700 mb-2">
-                            المعايير والاشتراطات:
-                          </h4>
+                          <h4 className="text-xs font-bold text-gov-700 mb-2">المعايير والاشتراطات:</h4>
                           <ul className="space-y-1">
                             {detailedInfo.standards.map((standard, idx) => (
-                              <li
-                                key={idx}
-                                className="flex items-start gap-2 text-xs text-gray-600"
-                              >
-                                <Shield
-                                  size={10}
-                                  className="text-blue-500 mt-0.5 shrink-0"
-                                />
+                              <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
+                                <Shield size={10} className="text-blue-500 mt-0.5 shrink-0" />
                                 <span>{standard}</span>
                               </li>
                             ))}
@@ -815,19 +788,11 @@ const AdvancedAwarenessSection = memo(({ theme }: { theme?: 'light' | 'dark' }) 
                       )}
                       {detailedInfo.benefits && (
                         <div>
-                          <h4 className="text-xs font-bold text-emerald-700 mb-2">
-                            الفوائد المرجوة:
-                          </h4>
+                          <h4 className="text-xs font-bold text-emerald-700 mb-2">الفوائد المرجوة:</h4>
                           <ul className="space-y-1">
                             {detailedInfo.benefits.map((benefit, idx) => (
-                              <li
-                                key={idx}
-                                className="flex items-start gap-2 text-xs text-gray-600"
-                              >
-                                <TrendingUp
-                                  size={10}
-                                  className="text-emerald-500 mt-0.5 shrink-0"
-                                />
+                              <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
+                                <TrendingUp size={10} className="text-emerald-500 mt-0.5 shrink-0" />
                                 <span>{benefit}</span>
                               </li>
                             ))}
@@ -837,10 +802,7 @@ const AdvancedAwarenessSection = memo(({ theme }: { theme?: 'light' | 'dark' }) 
                       {detailedInfo.statistics && (
                         <div className="grid grid-cols-3 gap-2">
                           {detailedInfo.statistics.map((stat, idx) => (
-                            <div
-                              key={idx}
-                              className="bg-gray-50 rounded-lg p-2 text-center"
-                            >
+                            <div key={idx} className="bg-gray-50 rounded-lg p-2 text-center">
                               <div className="text-sm font-bold text-gov-700">{stat.value}</div>
                               <div className="text-[10px] text-gray-500">{stat.label}</div>
                             </div>
@@ -877,12 +839,9 @@ const AdvancedAwarenessSection = memo(({ theme }: { theme?: 'light' | 'dark' }) 
 
         <div className="mt-16 text-center">
           <div className="inline-flex items-center gap-3 bg-gradient-to-r from-gold-50 to-gold-100 border border-gold-200 px-6 py-4 rounded-2xl">
-            <Award
-              size={24}
-              className="text-gold-600"
-            />
+            <Award size={24} className="text-gold-600" />
             <div className="text-right">
-              <div className="font-bold text-gold-800 text-sm">معاً نحو مدنية ذمار نموذجية</div>
+              <div className="font-bold text-gold-800 text-sm">معاً نحو ذمار نموذجية</div>
               <div className="text-xs text-gold-600 mt-0.5">
                 نحو مدينة ذمارية حديثة، منظمة، ومستدامة
               </div>
@@ -920,10 +879,7 @@ const MapHighlightSection = memo(() => {
       style={{ transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)' }}
       aria-label="الموقع الجغرافي"
     >
-      <div
-        className="absolute inset-0 opacity-[0.02] pointer-events-none"
-        aria-hidden="true"
-      >
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" aria-hidden="true">
         <div
           className="absolute inset-0"
           style={{
@@ -935,28 +891,21 @@ const MapHighlightSection = memo(() => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-gov-50 border border-gov-100 px-4 py-2 rounded-full mb-4">
-            <MapPin
-              size={18}
-              className="text-gov-600"
-            />
+            <MapPin size={18} className="text-gov-600" />
             <span className="text-sm font-bold text-gov-700">موقعنا الجغرافي</span>
           </div>
           <h2 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-3">
             زورونا في مقر المكتب
           </h2>
           <p className="text-gray-500 text-sm lg:text-base max-w-2xl mx-auto">
-            يقع مكتب الأشغال العامة والطرق في قلب مدينة ذمار، ويسعدنا استقبالكم خلال ساعات العمل
-            الرسمية
+            يقع مكتب الأشغال العامة والطرق في قلب مدينة ذمار، ويسعدنا استقبالكم خلال ساعات العمل الرسمية
           </p>
         </div>
         <div className="max-w-5xl mx-auto bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden">
           <div className="p-6 border-b border-gray-100 bg-gov-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-gov-100 rounded-xl flex items-center justify-center">
-                <MapPin
-                  size={22}
-                  className="text-gov-600"
-                />
+                <MapPin size={22} className="text-gov-600" />
               </div>
               <div>
                 <h3 className="font-bold text-gov-800">مكتب الأشغال العامة والطرق</h3>
@@ -973,32 +922,18 @@ const MapHighlightSection = memo(() => {
             </a>
           </div>
           <div className="p-4">
-            <DhamarMap
-              compact={true}
-              className="h-64 sm:h-80"
-            />
+            <DhamarMap compact={true} className="h-64 sm:h-80" />
           </div>
           <div className="px-6 py-3 bg-gray-50 border-t border-gray-100">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-xs text-gray-500">
               <div className="flex items-center gap-2">
-                <Clock
-                  size={14}
-                  className="text-gov-500"
-                />
+                <Clock size={14} className="text-gov-500" />
                 <span>السبت - الأربعاء: 8:00 ص - 3:00 م</span>
               </div>
               <span className="hidden sm:inline text-gray-300">|</span>
               <div className="flex items-center gap-2">
-                <Phone
-                  size={14}
-                  className="text-gov-500"
-                />
-                <a
-                  href="tel:+967777888198"
-                  className="hover:text-gov-600 transition-colors"
-                >
-                  777-888-198
-                </a>
+                <Phone size={14} className="text-gov-500" />
+                <a href="tel:+967777888198" className="hover:text-gov-600 transition-colors">777-888-198</a>
               </div>
             </div>
           </div>
@@ -1015,17 +950,8 @@ const MapHighlightSection = memo(() => {
 MapHighlightSection.displayName = 'MapHighlightSection';
 
 const FooterSection = memo(
-  ({
-    onNavigate,
-    onThemeToggle,
-    theme,
-  }: {
-    onNavigate: (page: string) => void;
-    onThemeToggle?: () => void;
-    theme?: 'light' | 'dark';
-  }) => {
+  ({ onNavigate, theme }: { onNavigate: (page: string) => void; theme?: 'light' | 'dark' }) => {
     const bgClass = theme === 'dark' ? 'bg-gray-950' : 'bg-gov-900';
-    const textClass = theme === 'dark' ? 'text-gray-300' : 'text-white/90';
     const borderClass = theme === 'dark' ? 'border-gray-800' : 'border-gold-500/30';
 
     const footerLinks = [
@@ -1040,14 +966,8 @@ const FooterSection = memo(
     ];
 
     const legalLinks = [
-      {
-        label: 'قانون البناء رقم 19 لسنة 2002م',
-        href: SITE_CONFIG.officialLinks.lawsPortal + 'lib_details.php?id=42',
-      },
-      {
-        label: 'قانون التخطيط الحضري رقم 20',
-        href: SITE_CONFIG.officialLinks.lawsPortal + 'lib_details.php?id=118',
-      },
+      { label: 'قانون البناء رقم 19 لسنة 2002م', href: SITE_CONFIG.officialLinks.lawsPortal + 'lib_details.php?id=42' },
+      { label: 'قانون التخطيط الحضري رقم 20', href: SITE_CONFIG.officialLinks.lawsPortal + 'lib_details.php?id=118' },
       { label: 'المركز الوطني للمعلومات', href: SITE_CONFIG.officialLinks.nationalInfoCenter },
       { label: 'بوابة القوانين اليمنية', href: SITE_CONFIG.officialLinks.lawsPortal },
     ];
@@ -1056,10 +976,7 @@ const FooterSection = memo(
       { icon: MapPin, text: SITE_CONFIG.contact.address },
       { icon: Phone, text: SITE_CONFIG.contact.phone, href: `tel:${SITE_CONFIG.contact.phone}` },
       { icon: Mail, text: SITE_CONFIG.contact.email, href: `mailto:${SITE_CONFIG.contact.email}` },
-      {
-        icon: Clock,
-        text: `${SITE_CONFIG.contact.workingDays} | ${SITE_CONFIG.contact.workingHours}`,
-      },
+      { icon: Clock, text: `${SITE_CONFIG.contact.workingDays} | ${SITE_CONFIG.contact.workingHours}` },
     ];
 
     return (
@@ -1068,10 +985,20 @@ const FooterSection = memo(
         role="contentinfo"
         aria-label="تذييل الصفحة"
       >
-        {/* خلفية زخرفية */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #d4af37 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-          <div className="absolute inset-0 opacity-[0.05]" style={{ background: 'radial-gradient(circle at 50% 0%, rgba(212,175,55,0.15) 0%, transparent 50%)' }} />
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, #d4af37 1px, transparent 0)',
+              backgroundSize: '40px 40px',
+            }}
+          />
+          <div
+            className="absolute inset-0 opacity-[0.05]"
+            style={{
+              background: 'radial-gradient(circle at 50% 0%, rgba(212,175,55,0.15) 0%, transparent 50%)',
+            }}
+          />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1110,7 +1037,10 @@ const FooterSection = memo(
               <ul className="space-y-2.5">
                 {footerLinks.map((item) => (
                   <li key={item.page}>
-                    <button onClick={() => onNavigate(item.page)} className="text-white/60 hover:text-gold-400 hover:translate-x-1 transition-all text-xs flex items-center gap-2 group w-full text-right">
+                    <button
+                      onClick={() => onNavigate(item.page)}
+                      className="text-white/60 hover:text-gold-400 hover:translate-x-1 transition-all text-xs flex items-center gap-2 group w-full text-right"
+                    >
                       <ArrowLeft size={12} className="group-hover:text-gold-400 transition-colors" />
                       {item.label}
                     </button>
@@ -1127,7 +1057,12 @@ const FooterSection = memo(
               <ul className="space-y-2.5">
                 {legalLinks.map((item) => (
                   <li key={item.label}>
-                    <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-gold-400 transition-colors text-xs flex items-center gap-2 group">
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/60 hover:text-gold-400 transition-colors text-xs flex items-center gap-2 group"
+                    >
                       <ExternalLink size={10} className="group-hover:scale-110 transition-transform text-gold-400/60 group-hover:text-gold-400" />
                       <span className="group-hover:translate-x-1 transition-transform inline-block">{item.label}</span>
                     </a>
@@ -1168,9 +1103,21 @@ const FooterSection = memo(
                 <p>© {SITE_CONFIG.year} {SITE_CONFIG.fullName} - {SITE_CONFIG.governorate}. جميع الحقوق محفوظة.</p>
               </div>
               <div className="flex items-center gap-4">
-                <a href="/privacy" onClick={(e) => { e.preventDefault(); onNavigate('privacy'); }} className="text-white/40 hover:text-gold-400 text-xs transition-colors">سياسة الخصوصية</a>
+                <a
+                  href="/privacy"
+                  onClick={(e) => { e.preventDefault(); onNavigate('privacy'); }}
+                  className="text-white/40 hover:text-gold-400 text-xs transition-colors"
+                >
+                  سياسة الخصوصية
+                </a>
                 <span className="text-white/20">|</span>
-                <a href="/terms" onClick={(e) => { e.preventDefault(); onNavigate('terms'); }} className="text-white/40 hover:text-gold-400 text-xs transition-colors">شروط الاستخدام</a>
+                <a
+                  href="/terms"
+                  onClick={(e) => { e.preventDefault(); onNavigate('terms'); }}
+                  className="text-white/40 hover:text-gold-400 text-xs transition-colors"
+                >
+                  شروط الاستخدام
+                </a>
               </div>
             </div>
           </div>

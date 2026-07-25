@@ -1,0 +1,1058 @@
+/* ============================================================
+   HeroSection.css v7.0 - Ultimate Platinum
+   أقوى تصميم | 3D Parallax | Premium Animations
+   ============================================================ */
+
+/* ===== المتغيرات الأساسية ===== */
+:root {
+  --hero-gradient-start: #0a1628;
+  --hero-gradient-mid: #0f1f38;
+  --hero-gradient-end: #0a1628;
+  --gold-primary: #d4af37;
+  --gold-light: #fbbf24;
+  --gold-dark: #b8962e;
+  --blue-primary: #1e3a8a;
+  --blue-light: #3b82f6;
+}
+
+/* ===== القسم الرئيسي ===== */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: var(--hero-gradient-start);
+  isolation: isolate;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.hero-section--visible {
+  animation: heroFadeIn 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== الخلفية المتدرجة السينمائية ===== */
+.hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(5, 150, 105, 0.08) 0%, transparent 50%);
+}
+
+.hero-background-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    var(--hero-gradient-start) 0%,
+    var(--hero-gradient-mid) 50%,
+    var(--hero-gradient-end) 100%
+  );
+  opacity: 0.92;
+  mix-blend-mode: overlay;
+}
+
+/* ===== النقش الهندسي المتقدم ===== */
+.hero-geometric-pattern {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.6;
+  mix-blend-mode: soft-light;
+}
+
+.hero-svg {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  color: rgba(212, 175, 55, 0.2);
+  animation: patternFloat 30s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes patternFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(10px, -10px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-5px, 5px) rotate(-1deg);
+  }
+  75% {
+    transform: translate(-10px, -5px) rotate(0.5deg);
+  }
+}
+
+/* ===== الإضاءات المحيطة المتقدمة ===== */
+.hero-ambient-lights {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-ambient-light {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  will-change: transform;
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.hero-ambient-light--gold {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.4) 0%, transparent 70%);
+  top: 10%;
+  right: 10%;
+  animation: ambientFloatGold 15s ease-in-out infinite;
+}
+
+.hero-ambient-light--blue {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(30, 58, 138, 0.5) 0%, transparent 70%);
+  bottom: 20%;
+  left: 15%;
+  animation: ambientFloatBlue 18s ease-in-out infinite;
+}
+
+.hero-ambient-light--green {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(5, 150, 105, 0.3) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  animation: ambientFloatGreen 20s ease-in-out infinite;
+}
+
+@keyframes ambientFloatGold {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+@keyframes ambientFloatBlue {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-25px, 25px) scale(1.15);
+  }
+  66% {
+    transform: translate(15px, -15px) scale(0.85);
+  }
+}
+
+@keyframes ambientFloatGreen {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+/* ===== الجسيمات المتحركة ===== */
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-particle {
+  position: absolute;
+  background: var(--gold-primary);
+  border-radius: 50%;
+  animation: particleFloat linear infinite;
+  opacity: 0.4;
+  will-change: transform, opacity;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* ===== المحتوى الرئيسي ===== */
+.hero-content {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: 100px 0 60px;
+}
+
+.hero-layout {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .hero-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+}
+
+/* ===== العمود النصي ===== */
+.hero-text-column {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  animation: heroTextReveal 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes heroTextReveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== الشارة المؤسسية ===== */
+.hero-institutional-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 100px;
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  width: fit-content;
+  animation: badgePulse 3s ease-in-out infinite;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+@keyframes badgePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(212, 175, 55, 0);
+  }
+}
+
+.hero-badge-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold-light);
+  letter-spacing: 0.5px;
+}
+
+/* ===== العنوان الرئيسي ===== */
+.hero-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hero-title {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.hero-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 0;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--gold-primary), transparent);
+  border-radius: 2px;
+  animation: titleUnderline 2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation-delay: 0.8s;
+  opacity: 0;
+}
+
+@keyframes titleUnderline {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 80px;
+    opacity: 1;
+  }
+}
+
+.hero-title-vision {
+  font-size: clamp(36px, 6vw, 64px);
+  font-size: clamp(2.25rem, 6vw, 4rem);
+  font-weight: 900;
+  line-height: 1.05;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    var(--gold-light) 35%,
+    var(--gold-primary) 65%,
+    #ffffff 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textShimmer 5s ease-in-out infinite;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 80px rgba(212, 175, 55, 0.3);
+  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.2));
+}
+
+@keyframes textShimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.hero-title-mission {
+  font-size: clamp(20px, 3vw, 28px);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+.hero-description {
+  font-size: clamp(15px, 1.8vw, 18px);
+  font-size: clamp(0.9375rem, 1.8vw, 1.125rem);
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 2;
+  max-width: 640px;
+  letter-spacing: 0.01em;
+}
+
+/* ===== القيم المؤسسية ===== */
+.hero-value-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.hero-value-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-2px);
+}
+
+/* ===== بطاقات المهام المتقدمة ===== */
+.hero-tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+@media (min-width: 640px) {
+  .hero-tasks-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.hero-task-card {
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  position: relative;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+  will-change: transform;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.hero-task-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.hero-task-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateY(-8px) rotateX(0deg) rotateY(0deg) scale(1.02);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(212, 175, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.hero-task-card:hover::before {
+  opacity: 1;
+}
+
+.hero-task-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+  border-radius: 14px;
+  margin-bottom: 14px;
+  color: white;
+  box-shadow:
+    0 4px 16px rgba(212, 175, 55, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-task-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  animation: iconShimmer 3s ease-in-out infinite;
+}
+
+@keyframes iconShimmer {
+  0%,
+  100% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  50% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+.hero-task-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.hero-task-desc {
+  display: block;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
+
+/* ===== أزرار الإجراءات السينمائية ===== */
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.hero-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.hero-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%) skewX(-45deg);
+  transition: transform 0.8s ease;
+}
+
+.hero-btn:hover::before {
+  transform: translateX(100%) skewX(-45deg);
+}
+
+.hero-btn--primary {
+  background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+  color: white;
+  box-shadow:
+    0 8px 24px rgba(212, 175, 55, 0.4),
+    0 0 0 1px rgba(212, 175, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.hero-btn--primary:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow:
+    0 16px 32px rgba(212, 175, 55, 0.5),
+    0 0 0 1px rgba(212, 175, 55, 0.4),
+    0 0 40px rgba(212, 175, 55, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.hero-btn--secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.hero-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(212, 175, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.hero-btn-icon {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hero-btn:hover .hero-btn-icon {
+  transform: translateX(-6px) scale(1.1);
+}
+
+.hero-btn:active {
+  transform: translateY(-2px) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+/* ===== الإحصائيات المتقدمة ===== */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 24px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+}
+
+.hero-stats::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+  animation: statsLineGlow 3s ease-in-out infinite;
+}
+
+@keyframes statsLineGlow {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateX(-100%);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.hero-stat:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-stat-value {
+  font-size: clamp(22px, 3.5vw, 32px);
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 50%, #fff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: 'Cairo', sans-serif;
+  letter-spacing: -0.02em;
+  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.4));
+}
+
+.hero-stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ===== العمود البصري السينمائي ===== */
+.hero-visual-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  animation: heroVisualReveal 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.hero-visual-frame {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.hero-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transform-style: preserve-3d;
+  transform: translateZ(20px);
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.08);
+  transition: transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  filter: brightness(1.1) contrast(1.05);
+}
+
+.hero-image-wrapper:hover .hero-image {
+  transform: scale(1.15);
+}
+
+.hero-image-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(10, 22, 40, 0.2) 60%, rgba(10, 22, 40, 0.6) 100%),
+    radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* ===== الإنجازات المتقدمة ===== */
+.hero-achievements {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+  transform: translateZ(40px);
+}
+
+.hero-achievement-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(30px) saturate(1.5);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  animation: badgeSlideIn 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  opacity: 0;
+  transform: translateX(30px);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-achievement-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.hero-achievement-badge:hover::before {
+  opacity: 1;
+}
+
+.hero-achievement-badge:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.hero-achievement-badge:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.hero-achievement-badge:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes badgeSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.hero-achievement-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+}
+
+.hero-achievement-year {
+  font-size: 10px;
+  color: var(--gold-light);
+  font-weight: 700;
+}
+
+/* ===== الختم الهندسي ===== */
+.hero-corner-seal {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 48px;
+  height: 48px;
+  animation: sealRotate 30s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes sealRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== مؤشر التمرير ===== */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 20;
+  animation: scrollIndicatorBounce 2s ease-in-out infinite;
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes scrollIndicatorBounce {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px);
+  }
+}
+
+.hero-scroll-indicator:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(212, 175, 55, 0.4);
+  animation: none;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.hero-scroll-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.hero-scroll-mouse {
+  width: 24px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  position: relative;
+}
+
+.hero-scroll-dot {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 8px;
+  background: var(--gold-light);
+  border-radius: 2px;
+  animation: scrollDotMove 1.5s ease-in-out infinite;
+}
+
+@keyframes scrollDotMove {
+  0%,
+  100% {
+    top: 8px;
+    opacity: 1;
+  }
+  50% {
+    top: 20px;
+    opacity: 0.3;
+  }
+}
+
+/* ===== شريط الانتقال السفلي ===== */
+.hero-bottom-transition {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to top, #f9fafb 0%, transparent 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ===== تأثيرات الظهور ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== استجابة للشاشات الصغيرة ===== */
+@media (max-width: 1023px) {
+  .hero-content {
+    padding-top: 60px;
+    padding-bottom: 120px;
+  }
+
+  .hero-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .hero-scroll-indicator {
+    bottom: 20px;
+    padding: 12px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-layout {
+    padding: 0 16px;
+    gap: 40px;
+  }
+
+  .hero-tasks-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .hero-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .hero-achievements {
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .hero-achievement-badge {
+    padding: 8px 12px;
+  }
+}
+
+/* ===== تأثيرات إضافية للعمود البصري ===== */
+
+@keyframes heroVisualReveal {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* ===== دعمالحركة المنخفضة ===== */
+@media (prefers-reduced-motion: reduce) {
+  .hero-section,
+  .hero-svg,
+  .hero-ambient-light,
+  .hero-particle,
+  .hero-scroll-indicator,
+  .hero-scroll-dot,
+  .hero-corner-seal,
+  .hero-achievement-badge {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ===== طباعة ===== */
+@media print {
+  .hero-section {
+    min-height: auto;
+    padding: 40px 0;
+  }
+
+  .hero-background,
+  .hero-ambient-lights,
+  .hero-particles,
+  .hero-scroll-indicator {
+    display: none;
+  }
+}

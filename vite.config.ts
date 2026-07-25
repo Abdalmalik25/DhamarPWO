@@ -58,8 +58,16 @@ export default defineConfig(({ mode }) => {
       strictPort: false,
       open: false,
       cors: {
-        origin: (origin: string | undefined, cb: (err: Error | null, origins: string | boolean) => void) => {
-          if (!origin || allowedOrigins.has(origin) || localhostOrigins.has(origin) || origin.endsWith('.vercel.app')) {
+        origin: (
+          origin: string | undefined,
+          cb: (err: Error | null, origins: string | boolean) => void,
+        ) => {
+          if (
+            !origin ||
+            allowedOrigins.has(origin) ||
+            localhostOrigins.has(origin) ||
+            origin.endsWith('.vercel.app')
+          ) {
             cb(null, true);
           } else {
             cb(null, false);

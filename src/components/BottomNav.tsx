@@ -35,6 +35,7 @@ const expandedItems = [
   { id: 'guidelines' as Page, label: 'الدليل الإرشادي', icon: BookOpen },
   { id: 'documents' as Page, label: 'الوثائق', icon: ScrollText },
   { id: 'about' as Page, label: 'عن المكتب', icon: Info },
+  { id: 'services' as Page, label: 'الخدمات', icon: HardHat },
 ];
 
 const accentColor = 'text-gov-600';
@@ -117,7 +118,7 @@ const BottomNav = memo(function BottomNav({ currentPage, onNavigate, isOffline }
       </div>
 
       {/* روابط إضافية مصغرة للصفحات الثانوية */}
-      <div className="flex items-center justify-around px-4 py-1 bg-gray-50 border-t border-gray-100">
+      <div className="flex items-center justify-around px-1 sm:px-2 py-1.5 bg-gray-50 border-t border-gray-100 safe-area-bottom">
         {expandedItems.map((item) => {
           const active = currentPage === item.id;
           const Icon = item.icon;
@@ -126,19 +127,20 @@ const BottomNav = memo(function BottomNav({ currentPage, onNavigate, isOffline }
             <button
               key={item.id}
               onClick={() => handleNavigate(item.id)}
-              className={`flex items-center gap-1 px-3 py-1 rounded-full text-[9px] font-medium transition-all ${
+              className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-all ${
                 active
-                  ? 'bg-gov-600 text-white shadow-sm'
-                  : 'text-gray-500 hover:text-gov-600 hover:bg-white'
+                  ? 'bg-gov-600 text-white shadow-md scale-105'
+                  : 'text-gray-600 hover:text-gov-600 hover:bg-white hover:shadow-sm'
               }`}
               aria-current={active ? 'page' : undefined}
               aria-label={item.label}
             >
               <Icon
-                size={10}
+                size={11}
                 aria-hidden="true"
               />
-              <span>{item.label}</span>
+              <span className="hidden sm:inline">{item.label}</span>
+              <span className="sm:hidden">{item.label.split(' ')[0]}</span>
             </button>
           );
         })}

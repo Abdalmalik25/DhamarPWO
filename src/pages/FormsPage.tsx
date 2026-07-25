@@ -73,11 +73,7 @@ const FORMS: FormData[] = [
       'سند ملكية الأرض أو عقد البيع المشروط',
       'المخططات الهندسية المعتمدة',
     ],
-    processSteps: [
-      'تعبئة النموذج إلكترونياً',
-      'طباعته وتوقيعه',
-      'تسليمه إلى مركز الخدمة',
-    ],
+    processSteps: ['تعبئة النموذج إلكترونياً', 'طباعته وتوقيعه', 'تسليمه إلى مركز الخدمة'],
     isPopular: true,
     isNew: false,
     isUrgent: false,
@@ -102,12 +98,7 @@ const FORMS: FormData[] = [
       'المخططات الإنشائية',
       'تقرير التربة للمشاريع الكبرى',
     ],
-    processSteps: [
-      'تقديم المخططات',
-      'مراجعة فنية',
-      'إبداء الملاحظات',
-      'الاعتماد النهائي',
-    ],
+    processSteps: ['تقديم المخططات', 'مراجعة فنية', 'إبداء الملاحظات', 'الاعتماد النهائي'],
     isPopular: true,
     isNew: false,
     isUrgent: false,
@@ -127,17 +118,8 @@ const FORMS: FormData[] = [
     component: FormN03,
     colorClass: 'amber',
     instructions: 'لتكليف لجنة فنية للنزول الميداني.',
-    requirements: [
-      'بيان موقع المشروع',
-      'المخططات المعتمدة',
-      'جدول زمني للمشروع',
-    ],
-    processSteps: [
-      'تقديم الطلب',
-      'جدولة المعاينة',
-      'النزول الميداني',
-      'إصدار تقرير',
-    ],
+    requirements: ['بيان موقع المشروع', 'المخططات المعتمدة', 'جدول زمني للمشروع'],
+    processSteps: ['تقديم الطلب', 'جدولة المعاينة', 'النزول الميداني', 'إصدار تقرير'],
     isPopular: false,
     isNew: false,
     isUrgent: true,
@@ -157,17 +139,8 @@ const FORMS: FormData[] = [
     component: FormN04,
     colorClass: 'orange',
     instructions: 'لاستئذان الحفر وأعمال البنية التحتية.',
-    requirements: [
-      'مخطط مسار الحفر',
-      'تصريح من الجهة المختصة',
-      'خطة السلامة المرورية',
-    ],
-    processSteps: [
-      'تقديم الطلب',
-      'مراجعة المخططات',
-      'إصدار التصريح',
-      'الإشراف على التنفيذ',
-    ],
+    requirements: ['مخطط مسار الحفر', 'تصريح من الجهة المختصة', 'خطة السلامة المرورية'],
+    processSteps: ['تقديم الطلب', 'مراجعة المخططات', 'إصدار التصريح', 'الإشراف على التنفيذ'],
     isPopular: false,
     isNew: true,
     isUrgent: false,
@@ -187,17 +160,8 @@ const FORMS: FormData[] = [
     component: FormN05,
     colorClass: 'purple',
     instructions: 'لطلب إفادات فنية أو شهادات هندسية.',
-    requirements: [
-      'صورة البطاقة الشخصية',
-      'رقم المعاملة السابقة',
-      'الغرض من الإفادة',
-    ],
-    processSteps: [
-      'تقديم الطلب',
-      'التحقق من البيانات',
-      'إصدار الإفادة',
-      'استلام الإفادة',
-    ],
+    requirements: ['صورة البطاقة الشخصية', 'رقم المعاملة السابقة', 'الغرض من الإفادة'],
+    processSteps: ['تقديم الطلب', 'التحقق من البيانات', 'إصدار الإفادة', 'استلام الإفادة'],
     isPopular: true,
     isNew: false,
     isUrgent: false,
@@ -217,17 +181,8 @@ const FORMS: FormData[] = [
     component: FormN06,
     colorClass: 'rose',
     instructions: 'للإبلاغ عن مخالفات هندسية.',
-    requirements: [
-      'وصف المخالفة',
-      'موقع المخالفة',
-      'صور فوتوغرافية',
-    ],
-    processSteps: [
-      'تقديم البلاغ',
-      'معاينة الموقع',
-      'اتخاذ الإجراء',
-      'متابعة النتيجة',
-    ],
+    requirements: ['وصف المخالفة', 'موقع المخالفة', 'صور فوتوغرافية'],
+    processSteps: ['تقديم البلاغ', 'معاينة الموقع', 'اتخاذ الإجراء', 'متابعة النتيجة'],
     isPopular: false,
     isNew: false,
     isUrgent: true,
@@ -247,17 +202,8 @@ const FORMS: FormData[] = [
     component: FormN07,
     colorClass: 'red',
     instructions: 'للاعتراض على القرارات الإدارية.',
-    requirements: [
-      'القرار المعترض عليه',
-      'مذكرة التظلم',
-      'المستندات الداعمة',
-    ],
-    processSteps: [
-      'تقديم التظلم',
-      'دراسة القرار',
-      'البت في التظلم',
-      'إشعار المتظلم',
-    ],
+    requirements: ['القرار المعترض عليه', 'مذكرة التظلم', 'المستندات الداعمة'],
+    processSteps: ['تقديم التظلم', 'دراسة القرار', 'البت في التظلم', 'إشعار المتظلم'],
     isPopular: false,
     isNew: false,
     isUrgent: false,
@@ -277,17 +223,8 @@ const FORMS: FormData[] = [
     component: FormN08,
     colorClass: 'slate',
     instructions: 'للإقرار والتعهد بالالتزام بالضوابط.',
-    requirements: [
-      'البيانات الشخصية',
-      'بيان المشروع',
-      'التعهدات المطلوبة',
-    ],
-    processSteps: [
-      'قراءة الإقرارات',
-      'التوقيع',
-      'التوثيق',
-      'الحفظ في الأرشيف',
-    ],
+    requirements: ['البيانات الشخصية', 'بيان المشروع', 'التعهدات المطلوبة'],
+    processSteps: ['قراءة الإقرارات', 'التوقيع', 'التوثيق', 'الحفظ في الأرشيف'],
     isPopular: false,
     isNew: true,
     isUrgent: false,
@@ -442,7 +379,7 @@ export default function FormsPage() {
 
   const handleSelectForm = useCallback((ref: string) => {
     setSelectedForm(ref);
-    globalThis.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const handleBack = useCallback(() => {
@@ -466,7 +403,10 @@ export default function FormsPage() {
   return (
     <div
       className={`min-h-screen ${isDarkMode ? 'dark bg-gray-900' : ''} transition-colors duration-300`}
-      style={{ background: isDarkMode ? undefined : 'var(--bg-page)', color: 'var(--text-primary)' }}
+      style={{
+        background: isDarkMode ? undefined : 'var(--bg-page)',
+        color: 'var(--text-primary)',
+      }}
       dir="rtl"
     >
       <PageHeader
@@ -501,7 +441,7 @@ export default function FormsPage() {
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <button
-              onClick={() => (globalThis.location.href = '/')}
+              onClick={() => (window.location.href = '/')}
               className="p-2.5 bg-white/10 hover:bg-white/20 rounded-xl transition-all backdrop-blur-sm"
               title="الرئيسية"
             >
@@ -857,7 +797,7 @@ export default function FormsPage() {
               </div>
             </div>
             <button
-              onClick={() => globalThis.open('mailto:dpw.dhamar@yemen.gov.ye')}
+              onClick={() => window.open('mailto:dpw.dhamar@yemen.gov.ye')}
               className="px-4 py-2 bg-gov-600 hover:bg-gov-700 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-gov-500/30 hover:scale-105"
             >
               <Mail

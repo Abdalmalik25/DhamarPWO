@@ -1,370 +1,340 @@
 // ============================================================
-// ContactCTASection.tsx - محطة الخدمة الهندسية الذكية (Pro v3.0)
-// مصمم خصيصًا لمكتب الأشغال العامة والطرق
+// ContactCTASection.tsx v6.0 - Platinum Interactive
+// قسم التواصل - تصميم تفاعلي متقدم مع تأثيرات 3D
 // ============================================================
 
-import { memo, useMemo } from 'react';
+import { memo, useState, useCallback, useRef } from 'react';
+import ScrollReveal from '../../../shared/components/ScrollReveal';
 import {
+  Mail,
   Phone,
-  MessageCircle,
-  HeadphonesIcon,
-  Smartphone,
-  HardHat,
-  ClipboardCheck,
   MapPin,
   Clock,
-  AlertTriangle,
-  Printer,
-  Search,
+  MessageCircle,
+  Send,
+  ExternalLink,
+  ChevronLeft,
+  Copy,
+  CheckCheck,
 } from 'lucide-react';
-import ScrollReveal from '../../../shared/components/ScrollReveal';
-import type { Page } from '../../../types/page';
-
-// ============================================================
-// 1. أنواع البيانات المتخصصة (Specialized Types)
-// ============================================================
-
-export type ServiceAction = 'track' | 'print' | 'consult' | 'report' | 'inspection';
 
 export interface ContactCTASectionProps {
-  /** دالة التنقل */
-  onNavigate: (page: Page) => void;
-  /** الصفحة الحالية (لتجنب عرض الزر إذا كنا بالفعل في صفحة التواصل) */
-  currentPage?: Page;
-  /** نوع التصميم (engineering / emergency / default) */
-  variant?: 'engineering' | 'emergency' | 'default';
-  /** رقم الهاتف (قابل للتخصيص) */
-  phoneNumber?: string;
-  /** رقم واتساب (قابل للتخصيص) */
-  whatsappNumber?: string;
-  /** عنوان المكتب (للعرض في البطاقة) */
-  officeAddress?: string;
-  /** ساعات العمل */
-  workingHours?: string;
-  /** العنوان الرئيسي */
-  title?: string;
-  /** النص الفرعي */
-  subtitle?: string;
-  /** هل تريد إظهار أزرار الخدمات السريعة؟ */
-  showQuickServices?: boolean;
-  /** إخفاء الشعار */
-  hideLogo?: boolean;
-  /** إخفاء المعلومات الإضافية (العنوان والساعات) */
-  hideInfo?: boolean;
-  /** فئات CSS إضافية */
+  onNavigate?: (page: string) => void;
+  theme?: 'light' | 'dark';
   className?: string;
 }
 
-// ============================================================
-// 2. المكون الرئيسي (Main Component)
-// ============================================================
+const CONTACT_INFO = {
+  phone: '06-521222',
+  mobile: '777-888-198',
+  email: 'dpw.dhamar@yemen.gov.ye',
+  address: 'مدينة ذمار - شارع الحسينية جوار مكتب الجمارك',
+  workingDays: 'السبت - الأربعاء',
+  workingHours: '8:00 صباحاً - 2:00 مساءً',
+};
 
-const ContactCTASection = memo(function ContactCTASection({
-  onNavigate,
-  currentPage = 'home',
-  variant = 'engineering',
-  phoneNumber = '777-888-198',
-  whatsappNumber = '777-888-198',
-  officeAddress = ' شارع الحسينية جوار مكتب الجمارك ',
-  workingHours = 'السبت - الأربعاء: 8:00 ص - 3:00 م',
-  title = 'هل تحتاج مساعدة هندسية؟',
-  subtitle = 'فريق المهندسين والفنيين في مكتب الأشغال جاهز لخدمتك',
-  showQuickServices = true,
-  hideLogo = false,
-  hideInfo = false,
-  className = '',
-}: ContactCTASectionProps) {
-  // ============================================================
-  // 2.1. التحقق من السياق (Context Check)
-  // ============================================================
+const ContactCard3D = memo(function ContactCard3D({
+  icon: Icon,
+  title,
+  value,
+  link,
+  color,
+  index,
+  theme,
+}: {
+  icon: React.ElementType;
+  title: string;
+  value: string;
+  link?: string;
+  color: string;
+  index: number;
+  theme?: 'light' | 'dark';
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const isOnContactPage = useMemo(() => currentPage === 'contact', [currentPage]);
+  const isDark = theme === 'dark';
 
-  // ============================================================
-  // 2.2. الكشف عن الجهاز (Device Detection)
-  // ============================================================
-
-  const isMobile = useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    return /Android|iPhone|iPad|iPod|BlackBerry|Opera Mini|IEMobile/i.test(navigator.userAgent);
-  }, []);
-
-  // ============================================================
-  // 2.3. تكوينات التصميم حسب النوع (Variant Configurations)
-  // ============================================================
-
-  const variantConfig = useMemo(() => {
-    switch (variant) {
-      case 'engineering':
-        return {
-          section: 'from-gov-900 via-gov-800 to-gov-900',
-          card: 'bg-white/10 backdrop-blur-xl border-2 border-white/15',
-          text: 'text-white',
-          textMuted: 'text-white/80',
-          iconGradient: 'from-gold-400 to-gold-600',
-          accentColor: 'gold',
-          buttonPrimary: 'from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700',
-          buttonSecondary: 'border-2 border-white/30 hover:border-white/60',
-        };
-      case 'emergency':
-        return {
-          section: 'from-red-900 via-red-800 to-red-900',
-          card: 'bg-white/10 backdrop-blur-xl border-2 border-red-500/40',
-          text: 'text-white',
-          textMuted: 'text-white/80',
-          iconGradient: 'from-red-400 to-red-600',
-          accentColor: 'red',
-          buttonPrimary: 'from-red-500 to-red-600 hover:from-red-600 hover:to-red-700',
-          buttonSecondary: 'border-2 border-white/30 hover:border-white/60',
-        };
-      default:
-        return {
-          section: 'from-gov-800 via-gov-900 to-gov-800',
-          card: 'bg-white/10 backdrop-blur-xl border-2 border-white/15',
-          text: 'text-white',
-          textMuted: 'text-white/80',
-          iconGradient: 'from-gold-400 to-gold-600',
-          accentColor: 'gold',
-          buttonPrimary: 'from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700',
-          buttonSecondary: 'border-2 border-white/30 hover:border-white/60',
-        };
-    }
-  }, [variant]);
-
-  // ============================================================
-  // 2.4. دوال معالجة الخدمات السريعة (Quick Service Handlers)
-  // ============================================================
-
-  const handleQuickService = (action: ServiceAction) => {
-    switch (action) {
-      case 'track':
-        onNavigate('track');
-        break;
-      case 'print':
-        onNavigate('forms');
-        break;
-      case 'consult':
-        onNavigate('services');
-        break;
-      case 'report':
-        onNavigate('contact');
-        break;
-      case 'inspection':
-        onNavigate('services');
-        break;
-    }
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    setMousePos({ x, y });
   };
 
-  // ============================================================
-  // 2.5. التصيير (Rendering)
-  // ============================================================
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setMousePos({ x: 0, y: 0 });
+  };
+
+  const content = link ? (
+    <a href={link} className="text-sm font-bold text-gov-600 hover:text-gov-700 transition-colors">
+      {value}
+    </a>
+  ) : (
+    <span className="text-sm font-bold text-gray-800">{value}</span>
+  );
 
   return (
-    <section
-      className={`py-24 bg-gradient-to-br ${variantConfig.section} relative overflow-hidden ${className}`}
-      aria-label="مركز خدمة الجمهور - مكتب الأشغال"
+    <div
+      ref={cardRef}
+      className={`group relative card-3d cursor-pointer ${
+        isDark ? 'text-gray-100' : 'text-gray-800'
+      }`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        perspective: '1000px',
+        transformStyle: 'preserve-3d',
+      }}
     >
-      {/* ===== خلفية متدرجة ===== */}
-      <div className="absolute inset-0 opacity-[0.05]">
+      <div
+        className="card-3d-inner relative h-full"
+        style={{
+          transform: isHovered
+            ? `rotateX(${mousePos.y * -4}deg) rotateY(${mousePos.x * 4}deg) scale(1.02)`
+            : 'rotateX(0deg) rotateY(0deg) scale(1)',
+          transition: 'transform 0.3s ease-out',
+        }}
+      >
+        <div
+          className={`absolute inset-0 rounded-3xl border-2 transition-all duration-500 ${
+            isDark
+              ? 'bg-gray-800/90 border-gray-700/50'
+              : 'bg-white/90 border-gray-100/50'
+          } ${isHovered ? 'shadow-2xl' : 'shadow-lg'}`}
+        />
+
+        <div
+          className="card-3d-shine"
+          style={{
+            background: isHovered
+              ? `radial-gradient(circle at ${50 + mousePos.x * 30}% ${50 + mousePos.y * 30}%, rgba(255,255,255,0.15) 0%, transparent 60%)`
+              : 'none',
+          }}
+        />
+
+        <div className="relative p-6 flex items-start gap-4">
+          <div
+            className={`w-14 h-14 bg-gradient-to-br ${color} rounded-2xl flex items-center justify-center shrink-0 shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
+            <Icon size={24} className="text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className={`text-base font-bold mb-1 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+              {title}
+            </h3>
+            {content}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+export const ContactCTASection = memo(function ContactCTASection({
+  onNavigate,
+  theme = 'light',
+  className = '',
+}: ContactCTASectionProps) {
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const isDark = theme === 'dark';
+
+  const handleCopy = useCallback(async (text: string, field: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  }, []);
+
+  const contactItems = [
+    {
+      icon: Phone,
+      title: 'الهاتف',
+      value: CONTACT_INFO.phone,
+      link: `tel:${CONTACT_INFO.phone}`,
+      color: 'from-emerald-600 to-teal-600',
+      field: 'phone',
+    },
+    {
+      icon: MessageCircle,
+      title: 'الجوال',
+      value: CONTACT_INFO.mobile,
+      link: `tel:${CONTACT_INFO.mobile}`,
+      color: 'from-blue-600 to-indigo-600',
+      field: 'mobile',
+    },
+    {
+      icon: Mail,
+      title: 'البريد الإلكتروني',
+      value: CONTACT_INFO.email,
+      link: `mailto:${CONTACT_INFO.email}`,
+      color: 'from-amber-600 to-orange-600',
+      field: 'email',
+    },
+    {
+      icon: MapPin,
+      title: 'العنوان',
+      value: CONTACT_INFO.address,
+      color: 'from-red-600 to-rose-600',
+      field: 'address',
+    },
+    {
+      icon: Clock,
+      title: 'ساعات العمل',
+      value: `${CONTACT_INFO.workingDays} | ${CONTACT_INFO.workingHours}`,
+      color: 'from-purple-600 to-violet-600',
+      field: 'hours',
+    },
+  ];
+
+  return (
+    <section className={`py-16 lg:py-20 ${isDark ? 'bg-gray-900' : 'bg-white'} relative overflow-hidden ${className}`}>
+      {/* خلفية */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" aria-hidden="true">
         <div
           className="absolute inset-0"
           style={{
             backgroundImage: 'radial-gradient(circle at 2px 2px, #d4af37 1px, transparent 0)',
-            backgroundSize: '48px 48px',
+            backgroundSize: '40px 40px',
           }}
         />
       </div>
 
-      {/* ===== صورة الخلفية ===== */}
-      <div className="absolute inset-0">
-        <img
-          src="/vite.svg"
-          alt=""
-          className="w-full h-full object-cover opacity-5"
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-gov-800/90 via-gov-900/85 to-gov-800/90" />
-      </div>
-
-      {/* ===== عناصر زخرفية ===== */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-gold-500/15 rounded-full blur-3xl animate-pulse" />
-        <div
-          className="absolute top-1/2 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        />
-        <div
-          className="absolute -bottom-40 left-1/4 w-72 h-72 bg-gold-400/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: '2s' }}
-        />
-      </div>
-
-      {/* ===== المحتوى الرئيسي ===== */}
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* الهيدر */}
         <ScrollReveal>
-          <div
-            className={`relative ${variantConfig.card} rounded-[2.5rem] p-12 md:p-16 shadow-2xl overflow-hidden`}
-          >
-            {/* زخرفة داخلية */}
-            <div className="absolute top-0 left-0 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-gov-50 border border-gov-100 px-4 py-2 rounded-full mb-4">
+              <MessageCircle size={18} className="text-gov-600" />
+              <span className="text-sm font-bold text-gov-700">تواصل معنا</span>
+            </div>
+            <h2 className={`text-3xl md:text-4xl font-black mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>
+              نحن هنا لمساعدتك
+            </h2>
+            <p className={`max-w-2xl mx-auto ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              تواصل معنا مباشرة أو زرنا في مقر المكتب خلال ساعات العمل الرسمية
+            </p>
+          </div>
+        </ScrollReveal>
 
-            <div className="relative z-10">
-              {/* الشعار */}
-              {!hideLogo && (
-                <div className="inline-flex items-center justify-center mb-6">
-                  <div className="relative w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl p-2 ring-2 ring-gold-500/30">
-                    <div
-                      className="w-full h-full rounded-2xl bg-gold-100/50"
-                      aria-hidden="true"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* الأيقونة الرئيسية */}
-              <div
-                className={`w-20 h-20 bg-gradient-to-br ${variantConfig.iconGradient} rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl`}
-              >
-                {variant === 'emergency' ? (
-                  <AlertTriangle
-                    size={36}
-                    className="text-white"
-                  />
-                ) : (
-                  <HeadphonesIcon
-                    size={36}
-                    className="text-white"
-                  />
+        {/* بطاقات التواصل */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {contactItems.map((item, idx) => (
+            <ScrollReveal key={item.field} delay={idx * 80}>
+              <div className="relative group">
+                <ContactCard3D
+                  icon={item.icon}
+                  title={item.title}
+                  value={item.value}
+                  link={item.link}
+                  color={item.color}
+                  index={idx}
+                  theme={theme}
+                />
+                
+                {/* زر النسخ */}
+                {!item.link && (
+                  <button
+                    onClick={() => handleCopy(item.value, item.field)}
+                    className="absolute top-4 left-4 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all opacity-0 group-hover:opacity-100"
+                    aria-label="نسخ"
+                  >
+                    {copiedField === item.field ? (
+                      <CheckCheck size={16} className="text-emerald-600" />
+                    ) : (
+                      <Copy size={16} className="text-gray-600" />
+                    )}
+                  </button>
                 )}
               </div>
+            </ScrollReveal>
+          ))}
+        </div>
 
-              {/* النصوص */}
-              <h2 className={`text-4xl md:text-5xl font-black ${variantConfig.text} mb-5`}>
-                {title}
-              </h2>
-              <p
-                className={`${variantConfig.textMuted} mb-10 text-lg md:text-xl max-w-2xl mx-auto`}
-              >
-                {subtitle}
+        {/* CTA الرئيسي */}
+        <ScrollReveal delay={300}>
+          <div className={`relative rounded-3xl p-8 md:p-12 overflow-hidden ${
+            isDark
+              ? 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700'
+              : 'bg-gradient-to-br from-gov-50 to-white border-2 border-gov-100'
+          }`}>
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" aria-hidden="true">
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: 'radial-gradient(circle at 2px 2px, #d4af37 1px, transparent 0)',
+                  backgroundSize: '40px 40px',
+                }}
+              />
+            </div>
+
+            <div className="relative z-10 text-center">
+              <div className="inline-flex items-center gap-2 bg-white border-2 border-gold-300 px-4 py-2 rounded-full mb-6">
+                <Send size={18} className="text-gold-600" />
+                <span className="text-sm font-bold text-gold-700">جاهز للتواصل</span>
+              </div>
+
+              <h3 className={`text-3xl md:text-4xl font-black mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                هل تحتاج إلى مساعدة؟
+              </h3>
+              <p className={`max-w-2xl mx-auto mb-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                فريقنا جاهز لمساعدتك في جميع الخدمات الهندسية والإدارية. لا تتردد في الاتصال بنا.
               </p>
 
-              {/* ===== الخدمات السريعة (Quick Engineering Services) ===== */}
-              {showQuickServices && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10 max-w-3xl mx-auto">
-                  <button
-                    onClick={() => handleQuickService('track')}
-                    className="group flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-3 md:p-4 text-white transition-all border border-white/10 hover:border-white/30"
-                  >
-                    <Search
-                      size={18}
-                      className="group-hover:scale-110 transition-transform"
-                    />
-                    <span className="text-xs md:text-sm font-medium">تتبع معاملة</span>
-                  </button>
-                  <button
-                    onClick={() => handleQuickService('print')}
-                    className="group flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-3 md:p-4 text-white transition-all border border-white/10 hover:border-white/30"
-                  >
-                    <Printer
-                      size={18}
-                      className="group-hover:scale-110 transition-transform"
-                    />
-                    <span className="text-xs md:text-sm font-medium">طباعة نموذج</span>
-                  </button>
-                  <button
-                    onClick={() => handleQuickService('consult')}
-                    className="group flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-3 md:p-4 text-white transition-all border border-white/10 hover:border-white/30"
-                  >
-                    <ClipboardCheck
-                      size={18}
-                      className="group-hover:scale-110 transition-transform"
-                    />
-                    <span className="text-xs md:text-sm font-medium">استشارة فنية</span>
-                  </button>
-                  <button
-                    onClick={() => handleQuickService('report')}
-                    className="group flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-3 md:p-4 text-white transition-all border border-white/10 hover:border-white/30"
-                  >
-                    <AlertTriangle
-                      size={18}
-                      className="group-hover:scale-110 transition-transform"
-                    />
-                    <span className="text-xs md:text-sm font-medium">بلاغ عاجل</span>
-                  </button>
-                </div>
-              )}
-
-              {/* ===== أزرار الاتصال ===== */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a
-                  href={`tel:+967${phoneNumber}`}
-                  className={`group inline-flex items-center gap-3 bg-gradient-to-r ${variantConfig.buttonPrimary} text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95`}
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <button
+                  onClick={() => window.location.href = `tel:${CONTACT_INFO.phone}`}
+                  className="px-8 py-4 bg-gradient-to-r from-gov-600 to-gov-700 hover:from-gov-700 hover:to-gov-800 text-white rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg flex items-center gap-2"
                 >
-                  <Phone
-                    size={22}
-                    className="group-hover:rotate-12 transition-transform"
-                  />
-                  <span>{phoneNumber}</span>
-                </a>
+                  <Phone size={20} />
+                  اتصل بنا الآن
+                </button>
 
-                {isMobile && whatsappNumber && (
-                  <a
-                    href={`https://wa.me/+967${whatsappNumber}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`group inline-flex items-center gap-3 ${variantConfig.buttonSecondary} text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95`}
-                  >
-                    <Smartphone
-                      size={22}
-                      className="group-hover:scale-110 transition-transform"
-                    />
-                    <span>واتساب</span>
-                  </a>
-                )}
+                <button
+                  onClick={() => window.location.href = `mailto:${CONTACT_INFO.email}`}
+                  className="px-8 py-4 bg-white hover:bg-gray-50 border-2 border-gray-200 text-gray-800 rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg flex items-center gap-2"
+                >
+                  <Mail size={20} />
+                  راسلنا
+                </button>
 
-                {!isOnContactPage && (
-                  <button
-                    onClick={() => onNavigate('contact')}
-                    className={`group inline-flex items-center gap-3 ${variantConfig.buttonSecondary} text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95`}
-                  >
-                    <MessageCircle
-                      size={22}
-                      className="group-hover:scale-110 transition-transform"
-                    />
-                    <span>تواصل معنا</span>
-                  </button>
-                )}
+                <button
+                  onClick={() => onNavigate?.('contact')}
+                  className="px-8 py-4 bg-gradient-to-r from-gold-600 to-gold-700 hover:from-gold-700 hover:to-gold-800 text-white rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg flex items-center gap-2"
+                >
+                  <ExternalLink size={20} />
+                  صفحة التواصل
+                  <ChevronLeft size={16} />
+                </button>
               </div>
 
-              {/* ===== معلومات المكتب ===== */}
-              {!hideInfo && (
-                <div className="mt-8 pt-8 border-t border-white/10 text-white/70 text-sm flex flex-col sm:flex-row items-center justify-center gap-4">
+              {/* معلومات إضافية */}
+              <div className={`mt-8 pt-8 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                <div className="flex flex-wrap items-center justify-center gap-6 text-xs">
                   <div className="flex items-center gap-2">
-                    <MapPin
-                      size={16}
-                      className="text-gold-400"
-                    />
-                    <span>{officeAddress}</span>
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                    <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>
+                      متاحون للرد خلال 24 ساعة
+                    </span>
                   </div>
-                  <span className="hidden sm:inline text-white/20">|</span>
-                  <div className="flex items-center gap-2">
-                    <Clock
-                      size={16}
-                      className="text-gold-400"
-                    />
-                    <span>{workingHours}</span>
-                  </div>
-                  <span className="hidden sm:inline text-white/20">|</span>
-                  <div className="flex items-center gap-2">
-                    <HardHat
-                      size={16}
-                      className="text-gold-400"
-                    />
-                    <span>الإشراف: م. هايل البحري</span>
-                  </div>
+                  <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>|</span>
+                  <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>
+                    استجابة سريعة لجميع الاستفسارات
+                  </span>
+                  <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>|</span>
+                  <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>
+                    خدمات متكاملة للمواطنين
+                  </span>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </ScrollReveal>
@@ -373,8 +343,5 @@ const ContactCTASection = memo(function ContactCTASection({
   );
 });
 
-// ============================================================
-// 3. تصدير الكل (Exports)
-// ============================================================
-
+ContactCTASection.displayName = 'ContactCTASection';
 export default ContactCTASection;

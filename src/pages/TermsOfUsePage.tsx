@@ -18,7 +18,8 @@ export default function TermsOfUsePage() {
 
   return (
     <div
-      className="min-h-screen" style={{ background: 'var(--bg-page)', color: 'var(--text-primary)' }}
+      className="min-h-screen"
+      style={{ background: 'var(--bg-page)', color: 'var(--text-primary)' }}
       dir="rtl"
     >
       <PageHeader

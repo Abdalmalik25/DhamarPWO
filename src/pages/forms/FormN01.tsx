@@ -21,9 +21,7 @@ export default function FormN01() {
             onClick={() => setApplicantType(type)}
             style={{ cursor: 'pointer', userSelect: 'none' }}
           >
-            <span
-              className={`cbox ${applicantType === type ? 'bg-gov-600 border-gov-600' : ''}`}
-            />
+            <span className={`cbox ${applicantType === type ? 'bg-gov-600 border-gov-600' : ''}`} />
             <span>{['مالك', 'وكيل شرعي', 'ورثة', 'ممثل شركة'][parseInt(type) - 1]}</span>
           </div>
         ))}

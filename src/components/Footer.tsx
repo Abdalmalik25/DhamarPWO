@@ -3,8 +3,9 @@
 // ============================================================
 
 import { memo } from 'react';
-import { Building2, Phone, Mail, MapPin, Clock, ExternalLink, Shield, Globe, ArrowLeft } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, ExternalLink, Shield, Globe, ArrowLeft } from 'lucide-react';
 import type { Page } from '../types/page';
+import GovernmentLogo from './GovernmentLogo';
 
 interface FooterProps {
   onNavigate: (page: Page) => void;
@@ -51,8 +52,20 @@ const Footer = memo(({ onNavigate }: FooterProps) => {
       aria-label="تذييل الصفحة"
     >
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #d4af37 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-        <div className="absolute inset-0 opacity-[0.05]" style={{ background: 'radial-gradient(circle at 50% 0%, rgba(212,175,55,0.15) 0%, transparent 50%)' }} />
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, #d4af37 1px, transparent 0)',
+            backgroundSize: '40px 40px',
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.05]"
+          style={{
+            background:
+              'radial-gradient(circle at 50% 0%, rgba(212,175,55,0.15) 0%, transparent 50%)',
+          }}
+        />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,25 +73,32 @@ const Footer = memo(({ onNavigate }: FooterProps) => {
           {/* الهوية المؤسسية */}
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <div className="relative w-14 h-14 bg-gradient-to-br from-gold-500 to-gold-700 rounded-2xl flex items-center justify-center shadow-lg shadow-gold-500/30">
-                <Building2 className="text-white" size={28} />
-                <div className="absolute -inset-1 bg-gradient-to-br from-gold-400 to-gold-600 rounded-2xl opacity-30 blur-sm" />
-              </div>
+              <GovernmentLogo
+                size="lg"
+                variant="footer"
+              />
               <div>
                 <h3 className="text-base font-black text-white">مكتب الأشغال</h3>
                 <p className="text-[10px] text-gold-400 font-bold">العامة والطرق - ذمار</p>
               </div>
             </div>
             <p className="text-white/60 text-xs leading-relaxed mb-4">
-              الجهة الحكومية الرسمية المخولة بتنظيم قطاع التشييد والبناء، وإصدار التراخيص العمرانية، والإشراف على مشاريع الطرق والبنية التحتية في محافظة ذمار.
+              الجهة الحكومية الرسمية المخولة بتنظيم قطاع التشييد والبناء، وإصدار التراخيص العمرانية،
+              والإشراف على مشاريع الطرق والبنية التحتية في محافظة ذمار.
             </p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-white/50">
-                <Globe size={12} className="text-gold-400" />
+                <Globe
+                  size={12}
+                  className="text-gold-400"
+                />
                 <span className="text-[10px]">الجمهورية اليمنية</span>
               </div>
               <div className="flex items-center gap-2 text-white/50">
-                <Shield size={12} className="text-gold-400" />
+                <Shield
+                  size={12}
+                  className="text-gold-400"
+                />
                 <span className="text-[10px]">وزارة الأشغال العامة والطرق</span>
               </div>
             </div>
@@ -93,8 +113,14 @@ const Footer = memo(({ onNavigate }: FooterProps) => {
             <ul className="space-y-2.5">
               {footerLinks.map((item) => (
                 <li key={item.page}>
-                  <button onClick={() => onNavigate(item.page)} className="text-white/60 hover:text-gold-400 hover:translate-x-1 transition-all text-xs flex items-center gap-2 group w-full text-right">
-                    <ArrowLeft size={12} className="group-hover:text-gold-400 transition-colors" />
+                  <button
+                    onClick={() => onNavigate(item.page)}
+                    className="text-white/60 hover:text-gold-400 hover:translate-x-1 transition-all text-xs flex items-center gap-2 group w-full text-right"
+                  >
+                    <ArrowLeft
+                      size={12}
+                      className="group-hover:text-gold-400 transition-colors"
+                    />
                     {item.label}
                   </button>
                 </li>
@@ -111,9 +137,19 @@ const Footer = memo(({ onNavigate }: FooterProps) => {
             <ul className="space-y-2.5">
               {legalLinks.map((item) => (
                 <li key={item.label}>
-                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-gold-400 transition-colors text-xs flex items-center gap-2 group">
-                    <ExternalLink size={10} className="group-hover:scale-110 transition-transform text-gold-400/60 group-hover:text-gold-400" />
-                    <span className="group-hover:translate-x-1 transition-transform inline-block">{item.label}</span>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/60 hover:text-gold-400 transition-colors text-xs flex items-center gap-2 group"
+                  >
+                    <ExternalLink
+                      size={10}
+                      className="group-hover:scale-110 transition-transform text-gold-400/60 group-hover:text-gold-400"
+                    />
+                    <span className="group-hover:translate-x-1 transition-transform inline-block">
+                      {item.label}
+                    </span>
                   </a>
                 </li>
               ))}
@@ -130,14 +166,25 @@ const Footer = memo(({ onNavigate }: FooterProps) => {
               {contactInfo.map((item) => {
                 const Icon = item.icon;
                 const content = item.href ? (
-                  <a href={item.href} className="text-white/60 hover:text-gold-400 transition-colors text-xs font-mono">{item.text}</a>
+                  <a
+                    href={item.href}
+                    className="text-white/60 hover:text-gold-400 transition-colors text-xs font-mono"
+                  >
+                    {item.text}
+                  </a>
                 ) : (
                   <span className="text-white/60 text-xs">{item.text}</span>
                 );
                 return (
-                  <div key={item.text} className="flex items-start gap-3 group">
+                  <div
+                    key={item.text}
+                    className="flex items-start gap-3 group"
+                  >
                     <div className="w-9 h-9 bg-gradient-to-br from-gold-500/20 to-gold-600/10 rounded-xl flex items-center justify-center shrink-0 border border-gold-500/20 group-hover:border-gold-500/40 group-hover:scale-110 transition-all">
-                      <Icon size={14} className="text-gold-400" />
+                      <Icon
+                        size={14}
+                        className="text-gold-400"
+                      />
                     </div>
                     <div className="flex-1 pt-1.5">{content}</div>
                   </div>
@@ -149,13 +196,24 @@ const Footer = memo(({ onNavigate }: FooterProps) => {
               <h5 className="text-[10px] font-bold text-gold-400 mb-3">فريق الهندسة</h5>
               <div className="space-y-2">
                 {engineers.map((engineer) => (
-                  <a key={engineer.phone} href={`tel:+967${engineer.phone}`} className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors group border border-transparent hover:border-gold-500/20">
+                  <a
+                    key={engineer.phone}
+                    href={`tel:+967${engineer.phone}`}
+                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors group border border-transparent hover:border-gold-500/20"
+                  >
                     <div className="w-9 h-9 bg-gradient-to-br from-gold-500 to-gold-700 rounded-xl flex items-center justify-center text-white text-xs font-bold group-hover:scale-110 transition-transform shadow-md">
                       {engineer.name.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs font-bold text-white/80 group-hover:text-gold-400 transition-colors">{engineer.name}</div>
-                      <div className="text-[10px] text-white/40 font-mono" dir="ltr">{engineer.phone}</div>
+                      <div className="text-xs font-bold text-white/80 group-hover:text-gold-400 transition-colors">
+                        {engineer.name}
+                      </div>
+                      <div
+                        className="text-[10px] text-white/40 font-mono"
+                        dir="ltr"
+                      >
+                        {engineer.phone}
+                      </div>
                     </div>
                   </a>
                 ))}
@@ -170,9 +228,27 @@ const Footer = memo(({ onNavigate }: FooterProps) => {
               <p>© {currentYear} مكتب الأشغال العامة والطرق - محافظة ذمار. جميع الحقوق محفوظة.</p>
             </div>
             <div className="flex items-center gap-4">
-              <a href="/privacy" onClick={(e) => { e.preventDefault(); onNavigate('privacy'); }} className="text-white/40 hover:text-gold-400 text-xs transition-colors">سياسة الخصوصية</a>
+              <a
+                href="/privacy"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('privacy');
+                }}
+                className="text-white/40 hover:text-gold-400 text-xs transition-colors"
+              >
+                سياسة الخصوصية
+              </a>
               <span className="text-white/20">|</span>
-              <a href="/terms" onClick={(e) => { e.preventDefault(); onNavigate('terms'); }} className="text-white/40 hover:text-gold-400 text-xs transition-colors">شروط الاستخدام</a>
+              <a
+                href="/terms"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('terms');
+                }}
+                className="text-white/40 hover:text-gold-400 text-xs transition-colors"
+              >
+                شروط الاستخدام
+              </a>
             </div>
           </div>
         </div>

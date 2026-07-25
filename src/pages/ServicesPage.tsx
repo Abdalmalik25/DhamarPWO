@@ -149,7 +149,7 @@ const SERVICES_CATALOG: ServiceItem[] = [
     isActive: true,
     lastUpdated: '2026-03-15',
   },
-    {
+  {
     id: 'SVC-002',
     title: 'اعتماد المخططات الهندسية',
     description:
@@ -618,10 +618,10 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
             دليل الخدمات الهندسية والإدارية
           </h1>
           <p className="text-white/70 text-base md:text-lg max-w-2xl mx-auto mb-4 leading-relaxed">
-            مكتب الأشغال العامة والطرق بمحافظة ذمار يقدم{' '}
-            <span className="text-gold-300 font-semibold">(68)</span> خدمة هندسية وإدارية موزعة على{' '}
+            نقدم بفخر واعتزاز <span className="text-gold-300 font-semibold">(68)</span> خدمة هندسية
+            وإدارية متكاملة، تتوزع باحترافية على{' '}
             <span className="text-gold-300 font-semibold">{categories.length - 1}</span> قطاعات
-            رئيسية.
+            رئيسية لتلبي كافة تطلعاتكم.
           </p>
           <div className="max-w-4xl mx-auto grid gap-3 sm:grid-cols-3 mb-8 text-white/80 text-sm">
             <div className="rounded-3xl bg-white/10 border border-white/10 p-4">

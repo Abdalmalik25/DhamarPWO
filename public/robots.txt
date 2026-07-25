@@ -1,39 +1,92 @@
-# Robots.txt - مكتب الأشغال العامة والطرق - محافظة ذمار
-# الإصدار 2.0 - محسّن للإنتاج
+# ============================================================
+# robots.txt - مكتب الأشغال العامة والطرق - محافظة ذمار
+# الإصدار 5.0 - مُحسّن لـ SEO
+# ============================================================
 
+# ====== القواعد العامة ======
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /private/
-Disallow: /admin
-Disallow: /login
-Disallow: /dashboard
-
-# السماح بالزحف للمحتوى العام
-Allow: /public/
-Allow: /docs/
-
-# تحديد معدل الزحف
-Crawl-delay: 1
-Request-rate: 10/1m
-
-# خرائط الموقع
-Sitemap: https://pwo-dhamar.gov.ye/sitemap.xml
-Sitemap: https://pwo-dhamar.gov.ye/sitemap-ar.xml
-
-# منع الزحف للملفات الحساسة
-Disallow: /*.json$
-Disallow: /*.env
+Disallow: /admin/
+Disallow: /login/
+Disallow: /dashboard/
+Disallow: /_next/
+Disallow: /static/css/
+Disallow: /static/js/
 Disallow: /node_modules/
 Disallow: /dist/
 
-# تحسين SEO للمحتوى الرئيسي
+# ====== السماح بالزحف للمحتوى العام ======
+Allow: /public/
+Allow: /docs/
+Allow: /icons/
+Allow: /images/
+Allow: /fonts/
+
+# ====== Googlebot (محرك بحث Google) ======
 User-agent: Googlebot
 Allow: /
+Allow: /*.html$
+Allow: /*.pdf$
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /*.xml$
+Crawl-delay: 1
+Request-rate: 10/1m
 
+# ====== Googlebot Image (للصور) ======
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /icons/
+Allow: /public/
+Disallow: /
+
+# ====== Googlebot Video ======
+User-agent: Googlebot-Video
+Allow: /
+Crawl-delay: 2
+
+# ====== Bingbot (محرك بحث Bing) ======
 User-agent: Bingbot
 Allow: /
+Disallow: /api/
+Disallow: /private/
+Crawl-delay: 1
 
-# تحسين التتبع للمحركات
+# ====== Yandex (محرك بحث Yandex) ======
+User-agent: Yandex
+Allow: /
+Disallow: /api/
+Crawl-delay: 2
+
+# ====== Baidu (محرك بحث Baidu) ======
+User-agent: Baiduspider
+Allow: /
+Disallow: /api/
+Crawl-delay: 3
+
+# ====== DuckDuckGo ======
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 2
+
+# ====== Facebook / Social ======
+User-agent: facebookexternalhit
+Allow: /
+Crawl-delay: 1
+
+User-agent: Twitterbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: LinkedInBot
+Allow: /
+Crawl-delay: 1
+
+# ====== تحسين سرعة الزحف ======
 User-agent: *
 Crawl-delay: 0.5
+
+# ====== خرائط الموقع ======
+Sitemap: https://pwo-dhamar.gov.ye/sitemap.xml
